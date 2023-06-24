@@ -1,0 +1,63 @@
+
+TODO
++scrivere in overleaf che si è epnsato che l'app bega usata alla sera, qundi p non si possono cancellare, e se vengono rimesse, elvecchie si cancellano
++aggiungere cancella sintomo
++SEPARARE BENE VIEW DA VIEWMIODEL --> SCRIVERE POI DIAGRAMMA DELLE CLASSI
+
++ TEST SU UTENTI
+   PAZ IPERTESO
+   STUD MED
+
+- BELLEZZA 
+
+- (DEPLOY)
+
+- RICONTROLLARE TUTTI DIAGRAMMI E FILE OVERLEAF (INSEIRE DIAGRAMMI)
+    + diegrammi classi
+    + diagrammi seiwqnce
+    + capire riga strrana di singletons
+    +schema relazionale
+
+
+
+
+FORSE AGGIUNGERE NLE CODICE
+- non cancellare misurazioni di rpessioni se fifaccio dati giornata
+- mettere __ in attr provati
+
+SCLETE LECITE BY COMBI
+-ikl medico e TERAPIE:
+- medico può vedere solo sintomi in croso, E non può mdoifciarli ne renderlri pregressi
+- quando si profrssa una aptologia anche se si modifcano gli altri campi, non hanno efetto, qundo si rende rpegrssa si immette solko la data di fine
+- 
+
+DETTAGLI IMPLETATIVI
+- quando paz NON si logga NON vengono isnerite tuple
+- se una assunzione è NON presa, vien lo stesso slavata con ciorr=false e ora=000000
+- solo il primo emdico invoca controlli epr tutti pazienti --> faccio altra tabella dove segbo se oggi ho giaà fatto controllo !!!!
+- NB wuando segnalzione i ter o part vengono agginte come confermate, npon sono fatti controlli, infatti il emtdico al emnto delacctetzione npon può fare meofichen  ei cotnrolli sono già stati fatti dalla parte del paziente
+- attr vanno messi prvati in classi --< va bene anche con solo _attr
+- comobisidtà è stessa cosa di pat_conc 
+-TER CONC NO MDOFICA NOMEM E DATA I
+- ok scotruttire in classe satratta
+- classid ella view sono vuote
+-associanzioni anche se c'è solo un attr
+- no looop inc otrlli di seiqince
+
+DOMANDE COMBI
+- ci spieghi il patern DAO. Noi lo abbiamo fatto? anche se non c'è interfACCIA?
+     no come labbimo fatto noi!!!!!
+- aggregazione/conposizione
+    no occorezze
+- design pattern vanno saputi con codice, es: decoraotr
+    solo aprti importantio
+- agile vs incrtemntale
+    inctretale sia agile che poanificato, vado a giri scueecci
+        se è agile iniza fare primo giro, poi con con raprestate cleinte cpasisco swencod incorenti, poi continuo cos' --Z pianifaciozne emntrpsto facendo
+        incrmetale plan direven , divido sempre in èpezzi, ma ho già prsento ptima, con i tempi
+- gurada se non fa tutto una classel
+
+
+
+"ALISKIREN", "AMLODIPINA", "BENAZEPRIL", "BISOPROLOLO", "CALCIU ANTAGONISTI", "CARVEDILOLO", "CHLORTALIDONE", "CAPTOPRIL", "CLONIDINA", "DILTIAZEM", "ENALAPRIL", "EPLERENONE", "FUROSEMIDE", "IDROCLOROTIAZIDE", "INDAPAMIDE", "LISINOPRIL", "LOSARTAN", "METOPROLOLO", "NEBIVOLOLO", "NIFEDIPINA", "OLMESARTAN", "PRAZOSIN", "PERINDOPRIL", "PROPRANOLOLO", "RAMIPRIL", "SACUBITRIL/VALSARTAN", "SPIROLATTONE", "TELMISARTAN", "TIAZIDI", "VALSARTAN", "VERAPAMIL"]
+["ANGINA", "ANSIA", "CEFALEA", "CONFUSIONE MENTALE", "DISTURBI VISIVI", "DOLORE TORACICO", "DISPNEA", "EPISTASSI", "FATICA", "FLUSSO URINARIO RIDOTTO", "INSUFFICIENZA RENALE", "IRRITABILITÀ", "PALPITAZIONI", "RUMORI ALL'ORECCHIO", "SANGUINAMENTO DAL NASO", "STANCHEZZA", "VERTIGINI", "VISIONE OFFUSCATA"]

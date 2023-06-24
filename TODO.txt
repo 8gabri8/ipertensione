@@ -1,14 +1,20 @@
-
 TODO
-+scrivere in overleaf che si è epnsato che l'app bega usata alla sera, qundi p non si possono cancellare, e se vengono rimesse, elvecchie si cancellano
-+aggiungere cancella sintomo
-+SEPARARE BENE VIEW DA VIEWMIODEL --> SCRIVERE POI DIAGRAMMA DELLE CLASSI
++ aggiungere cancella sintomo
++ dire che abbaimo fatto sia ben divisi voiew lodel per msotrare bene, mentre poi per tutti altri casi abbiamo fatto pop up
++ rimettere pop up in Conroller --> CMABIRE SCHEMI!!!!!!!!
+    homepaz: segna ter conc
+    modpaz: oncdoulbe click_pat_cponc()
++ contrlalre package di ipertendsione
++  sceirvere che medico può salvare immaginbe
+
+- BELLEZZA 
++ aggiungere scrollbar ad inseirmto dati giuoinalieri
 
 + TEST SU UTENTI
    PAZ IPERTESO
    STUD MED
 
-- BELLEZZA 
+
 
 - (DEPLOY)
 
@@ -17,6 +23,8 @@ TODO
     + diagrammi seiwqnce
     + capire riga strrana di singletons
     +schema relazionale
+
+- STRESS TEST
 
 
 

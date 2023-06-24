@@ -1136,7 +1136,7 @@ class App(tk.Tk):
                 
         Button(f1, text="Rendi Pregressa", command=iper2preg).pack(side='right', padx=10, pady=10)
 
-    ####### cencella ter iper ######
+        ####### cencella ter iper ######
         def cancella_ter_iper():
             #se paz ha ghià fatto una assunzioone, allora non si può cancellare
             ass = self.DB.my_query("select * from assunzione where id_paz = %s and nome_farm = %s and inizio_ter=%s", (utente.get_id_paz_selezionato(),
@@ -1186,7 +1186,7 @@ class App(tk.Tk):
                                         Quantità per dose: {values[2]}
                                         Numero di dosi: {values[3]}
                                         Indicazioni: {values[4]}
-                                        Vuoi accetarla?""").pack()
+                                        Vuoi accetarla?""").grid(row=0, columnspan=2)
             
             def accetta_ter_conc():
                 #creazione oggetto ter
@@ -1214,7 +1214,18 @@ class App(tk.Tk):
                     top.destroy() #distruggo pop up
                     self.show_frame("ShowTerapie", parent, utente)
 
-            Button(frame, text="Aggiungi", command = accetta_ter_conc).pack(padx=10, pady=10) 
+            Button(frame, text="Accetta", command = accetta_ter_conc).grid(row=1, column=0)
+
+            def rifiuta_ter_conc():
+                self.DB.my_query("DELETE FROM terapia WHERE nome_farm=%s AND id_paz=%s AND inizio=%s", (values[0], utente.get_id_paz_selezionato(), values[1]))
+
+                logging.basicConfig(filename='storico.log', encoding='utf-8', level=logging.DEBUG)
+                logging.info(f'Il medico {utente.get_ID()} ha rifiutato la seguente terapia concomitante:{values[0]}, {values[1]} per il paziente {utente.get_id_paz_selezionato()}')
+
+                top.destroy() #distruggo pop up
+                self.show_frame("ShowTerapie", parent, utente)
+
+            Button(frame, text="Rifiuta", command = rifiuta_ter_conc).grid(row=1, column=1)
 
         else: # è GIà ACCETTATA
             Label(frame, text="Farmaco:").grid(row=0, column=0, sticky="e")

@@ -168,7 +168,7 @@ class App(tk.Tk):
             top.grab_set()    
       
     ################ AGGIUNGI PAT CONC #####################
-    def segnala_pat_conc(self, utente, nome_pat, data_pat_conc, popup, parent):
+    def segnala_pat_conc(self, utente, parent):
         top = Toplevel()
         top.title("Segnala patologia concomitante")
 
@@ -192,9 +192,72 @@ class App(tk.Tk):
         # Create a button to close the Toplevel widget
         f1 = Frame(top)
         f1.pack()
-        ttk.Button(f1, text="Conferma",command = lambda: self.segnala_pat_conc(utente, cb_pat.get(), datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d'),
-                                                                                    top, parent)).pack(side='right', padx=10, pady=10)
 
+
+        def add_to_DB():
+            nome_pat = cb_pat.get()
+            data_pat_conc = datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+            #controlli:
+            #patologia conc NON pridi oggi
+            #non prima di prima ter iper
+            #non deve mettere stessa pat concomitnati che ho già
+            if(nome_pat == ""):
+                messagebox.showinfo(message="Non hai inserito alcuna patologia")
+                return
+
+            #prima controllo la data: NO dopo di oggi, NO prima di prima terapia ipetensivaterapie_ipre
+            #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
+            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s ORDER BY inizio", (utente.get_ID(),))
+            #print(terapie_iper)
+            #controllo che il paziente abbia alemno una ter iper
+            if(terapie_iper == []):
+                messagebox.showinfo(message="Non puoi avere una patologia concomitante se non ha iniziato ancora una terapia ipertensiva")
+                return
+            
+            #controllo che pa non abbia messo data del sintomo dopo di oggi, o prima di prima ter iper
+            data_patologia_conc_dt = data_pat_conc
+            data_prima_terapia_iper_dt =  datetime.strptime(terapie_iper[0][2].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            data_oggi_dt = datetime.today()
+
+            #print(data_oggi_dt, data_patologia_conc_dt, data_prima_terapia_iper_dt)
+
+            pat_preg = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_ID(), nome_pat))
+            if(len(pat_preg) != 0):
+                for ter_preg in pat_preg:
+                    start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                    end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                    if(data_patologia_conc_dt <= end_dt and data_patologia_conc_dt >= start_dt):
+                        messagebox.showinfo(message="In quel periodo stavi già soffrendo di questa patologia.")
+                        return
+
+                    #non deve esistere una terapia conc con uguale
+            pat_conc = self.DB.my_query("SELECT * FROM occ_patologia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s", ("conc", "segn_pat_conc", utente.get_ID()))
+            #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
+            for pat in pat_conc:
+                if(nome_pat == pat[0]):
+                    messagebox.showinfo(message="Stai già soffrendo o hai già segnalato questa patologia")
+                    return
+            if(data_patologia_conc_dt < data_prima_terapia_iper_dt): #devo controllare che la data non sia qu
+                messagebox.showinfo(message="Non puoi avere uina patologia concomitante prima di aver seguito una terampia ipertensiva")
+                return
+            if(data_patologia_conc_dt > data_oggi_dt):
+                messagebox.showinfo(message="Non puoi saper che patologia avrai nel futuro")
+                return
+            
+            #creo ogetto segn_pat
+            segn_pat = SegnPatConc.create_patologia(nome_pat, utente.get_ID(), data_pat_conc, )
+            #aggiungo cose a DB, bisogna fare un metodo nella classe terapia
+            self.DB.my_query("INSERT INTO occ_patologia (nome_pat, id_paz, inizio, tipo, fine) VALUES(%s,%s,%s,%s,%s)", 
+                    segn_pat.to_tupla())
+            
+            top.destroy() #distruggo pop up
+            #self.top_pop = False #una finestra per inserire terapia è già aperta
+            self.show_frame("HomePaz", parent, utente)
+
+        ttk.Button(f1, text="Conferma",command = add_to_DB).pack(side='right', padx=10, pady=10)
+        
+        
         # Center the Toplevel widget on the screen
         top.update_idletasks()
         w = top.winfo_screenwidth()
@@ -206,62 +269,6 @@ class App(tk.Tk):
 
         top.grab_set() # per bloccare la finestram pop up
         
-        #controlli:
-            #patologia conc NON pridi oggi
-            #non prima di prima ter iper
-            #non deve mettere stessa pat concomitnati che ho già
-        if(nome_pat == ""):
-            messagebox.showinfo(message="Non hai inserito alcuna patologia")
-            return
-
-        #prima controllo la data: NO dopo di oggi, NO prima di prima terapia ipetensivaterapie_ipre
-        #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
-        terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s ORDER BY inizio", (utente.get_ID(),))
-        #print(terapie_iper)
-        #controllo che il paziente abbia alemno una ter iper
-        if(terapie_iper == []):
-            messagebox.showinfo(message="Non puoi avere una patologia concomitante se non ha iniziato ancora una terapia ipertensiva")
-            return
-        
-        #controllo che pa non abbia messo data del sintomo dopo di oggi, o prima di prima ter iper
-        data_patologia_conc_dt = data_pat_conc
-        data_prima_terapia_iper_dt =  datetime.strptime(terapie_iper[0][2].strftime('%Y-%m-%d'), '%Y-%m-%d')
-        data_oggi_dt = datetime.today()
-
-        #print(data_oggi_dt, data_patologia_conc_dt, data_prima_terapia_iper_dt)
-
-        pat_preg = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_ID(), nome_pat))
-        if(len(pat_preg) != 0):
-            for ter_preg in pat_preg:
-                start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                if(data_patologia_conc_dt <= end_dt and data_patologia_conc_dt >= start_dt):
-                    messagebox.showinfo(message="In quel periodo stavi già soffrendo di questa patologia.")
-                    return
-
-                #non deve esistere una terapia conc con uguale
-        pat_conc = self.DB.my_query("SELECT * FROM occ_patologia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s", ("conc", "segn_pat_conc", utente.get_ID()))
-        #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
-        for pat in pat_conc:
-            if(nome_pat == pat[0]):
-                messagebox.showinfo(message="Stai già soffrendo o hai già segnalato questa patologia")
-                return
-        if(data_patologia_conc_dt < data_prima_terapia_iper_dt): #devo controllare che la data non sia qu
-            messagebox.showinfo(message="Non puoi avere uina patologia concomitante prima di aver seguito una terampia ipertensiva")
-            return
-        if(data_patologia_conc_dt > data_oggi_dt):
-            messagebox.showinfo(message="Non puoi saper che patologia avrai nel futuro")
-            return
-        
-        #creo ogetto segn_pat
-        segn_pat = SegnPatConc.create_patologia(nome_pat, utente.get_ID(), data_pat_conc, )
-        #aggiungo cose a DB, bisogna fare un metodo nella classe terapia
-        self.DB.my_query("INSERT INTO occ_patologia (nome_pat, id_paz, inizio, tipo, fine) VALUES(%s,%s,%s,%s,%s)", 
-                segn_pat.to_tupla())
-        
-        popup.destroy() #distruggo pop up
-        #self.top_pop = False #una finestra per inserire terapia è già aperta
-        self.show_frame("HomePaz", parent, utente)
 
     ################# aggiunta sintomo ####################################################
     def add_sintomo(self, utente, parent):
@@ -1217,12 +1224,7 @@ class App(tk.Tk):
         frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         if(values[5] == "Segnalata"):
-            Label(frame, text=f"""Il paziente ha segnalato la seguente terapia concomitante:
-Farmaco: {values[0]}
-Quantità per dose: {values[2]}
-Numero di dosi: {values[3]}
-Indicazioni: {values[4]}
-Vuoi accetarla?""").grid(row=0, columnspan=2)
+            Label(frame, text=f"Il paziente ha segnalato la seguente terapia concomitante:\nFarmaco: {values[0]}\nQuantità per dose: {values[2]}\nNumero di dosi: {values[3]}\nIndicazioni: {values[4]}\nVuoi accetarla?").grid(row=0, columnspan=2)
             
             def accetta_ter_conc():
                 #creazione oggetto ter
@@ -1391,7 +1393,7 @@ Vuoi accetarla?""").grid(row=0, columnspan=2)
         popup.destroy() #distruggo pop up
         self.show_frame("ModPaz", parent, utente)
 
-    def cancella_pat_conc(self, utente, nome_pat_conc, inizio_pat_conc, popup, parent):
+    def rifiuta_pat_conc(self, utente, nome_pat_conc, inizio_pat_conc, popup, parent):
         self.DB.my_query("DELETE FROM occ_patologia WHERE id_paz = %s AND inizio = %s and nome_pat = %s",
                 (utente.get_id_paz_selezionato(), inizio_pat_conc, nome_pat_conc))
         

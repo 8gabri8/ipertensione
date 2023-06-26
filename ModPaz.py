@@ -164,7 +164,7 @@ class ModPaz(tk.Frame):
                        
                     ttk.Button(frame, text="Accetta", command=lambda: controller.accetta_pat_conc(utente, values[0], values[1], top, parent)).grid(row=1, column=0, pady=10)
                     
-                    ttk.Button(frame, text="Rifiuta", command=lambda: controller.cancella_pat_conc(utente, values[0], values[1], top, parent)).grid(row=1, column=1, pady=10)
+                    ttk.Button(frame, text="Rifiuta", command=lambda: controller.rifiuta_pat_conc(utente, values[0], values[1], top, parent)).grid(row=1, column=1, pady=10)
 
                 else: #confemrata
 

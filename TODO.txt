@@ -2,7 +2,6 @@ TODO
 + aggiungere cancella sintomo in documetazione
 + aggiungere salba immagine rpecssion in documetazione
 + rimettere pop up in Conroller --> CMABIRE SCHEMI!!!!!!!!
-    homepaz: segna ter conc
     modpaz: oncdoulbe click_pat_cponc()
     vis pressioni, quello lop lascerei separato!!!! lo abbiamo fatto perchè c'è matplotlib e perchè è condivso anche con dati peroanli di paziente
 + contrlalre package di ipertendsione

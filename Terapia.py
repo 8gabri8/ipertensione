@@ -68,6 +68,8 @@ class Terapia:
             return "Campo quantità per dose non corretto, deve essere una stirnga, es: \"2 pastiglie\""
         elif ndosi == "" or ndosi is None or not ndosi.isdigit():
             return "Il numero di dosi deve essere un numero intero"
+        elif int(ndosi) > 4:
+            return "Il numero massimo di dosi gionaliere è 4"
         else:
             return Terapia(farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
 

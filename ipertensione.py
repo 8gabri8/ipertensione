@@ -169,6 +169,43 @@ class App(tk.Tk):
       
     ################ AGGIUNGI PAT CONC #####################
     def segnala_pat_conc(self, utente, nome_pat, data_pat_conc, popup, parent):
+        top = Toplevel()
+        top.title("Segnala patologia concomitante")
+
+        frame = LabelFrame(top, text="Segnala patologia concomitante")
+        frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        Label(frame, text="Nome patologia:").grid(row=0, column=0, sticky="e")
+        cb_pat = ttk.Combobox(frame)
+        pat = self.DB.my_query("SELECT Nome FROM Patologia", None)
+        pat = [str(item[0]) for item in pat]
+        cb_pat["values"] = pat
+        cb_pat.grid(row=0,column=1, sticky="w")
+        cb_pat["state"] = "readonly"
+        
+        Label(frame, text="Data di inizio della patologia:").grid(row=1, column=0, sticky="e")
+
+        cal = Calendar(frame, selectmode='day', date_pattern='yyyy-mm-dd') # Change the date pattern here
+        cal.grid(row=1, column=1, sticky="w")
+        cal.grid(pady=10, padx=10)
+
+        # Create a button to close the Toplevel widget
+        f1 = Frame(top)
+        f1.pack()
+        ttk.Button(f1, text="Conferma",command = lambda: self.segnala_pat_conc(utente, cb_pat.get(), datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d'),
+                                                                                    top, parent)).pack(side='right', padx=10, pady=10)
+
+        # Center the Toplevel widget on the screen
+        top.update_idletasks()
+        w = top.winfo_screenwidth()
+        h = top.winfo_screenheight()
+        size = tuple(int(_) for _ in top.geometry().split('+')[0].split('x'))
+        x = w/2 - size[0]/2
+        y = h/2 - size[1]/2
+        top.geometry("%dx%d+%d+%d" % (size + (x, y)))
+
+        top.grab_set() # per bloccare la finestram pop up
+        
         #controlli:
             #patologia conc NON pridi oggi
             #non prima di prima ter iper
@@ -345,13 +382,13 @@ class App(tk.Tk):
 
         Label(frame, text="Quantità per dose:").grid(row=1, column=0, sticky="e")
         qta = StringVar()
-        qta_entry = Entry(frame, width=30, textvariable=qta)
+        qta_entry = ttk.Entry(frame, width=30, textvariable=qta)
         qta_entry.grid(row=1, column=1, sticky="w")
         qta_entry.grid(pady=10)
         
         Label(frame, text="Numero di dosi al dì:").grid(row=3, column=0, sticky="e")
         ndosi = StringVar()
-        ndosi_entry = Entry(frame, width=30, textvariable=ndosi)
+        ndosi_entry = ttk.Entry(frame, width=30, textvariable=ndosi)
         ndosi_entry.grid(row=3, column=1, sticky="w")
         ndosi_entry.grid(pady=10)
 
@@ -360,7 +397,6 @@ class App(tk.Tk):
         text_ind = scrolledtext.ScrolledText(frame, wrap=tk.WORD, width=40, height=4)
         text_ind.grid(row=5, columnspan=2)
         text_ind.grid(pady=10)
-
         Label(frame, text="Data inzio della terapia:").grid(row=6, columnspan=2)
         cal = Calendar(frame, selectmode='day', date_pattern='yyyy-mm-dd') # Change the date pattern here
         cal.grid(row=7, columnspan=2)
@@ -450,12 +486,12 @@ class App(tk.Tk):
         frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Create Labels for each piece of information
-        Label(frame, text=f"Sintomo: {values[0]}").grid(row=0, column=0, sticky="e")
+        Label(frame, text=f"Sintomo: {values[0]}").grid(row=0, column=0, sticky="w")
         
-        Label(frame, text=f"Data di inizio del Sintomo: {values[1]}").grid(row=1, column=0, sticky="e")
+        Label(frame, text=f"Data di inizio del Sintomo: {values[1]}").grid(row=1, column=0, sticky="w")
 
         #controlla prima di oggi e non prim a di inzio ter conc
-        Label(frame, text="Data di fine del Sintomo: ").grid(row=2, column=0, sticky="e")
+        Label(frame, text="Data di fine del Sintomo: ").grid(row=2, column=0, sticky="w")
 
         cal = Calendar(frame, selectmode='day', date_pattern='yyyy-mm-dd') # Change the date pattern here
         cal.grid(row=3, columnspan=2, sticky="w")
@@ -495,7 +531,7 @@ class App(tk.Tk):
         # Create a button to close the Toplevel widget
         f1 = Frame(top)
         f1.pack()
-        Button(f1, text="Rendi pregresso",command = modDB).grid(row=0, column=0, padx=10, pady=10)
+        ttk.Button(f1, text="Rendi pregresso",command = modDB).grid(row=0, column=0, padx=10, pady=10)
 
         def canc_sint():
             self.DB.my_query("DELETE FROM occ_sintomo WHERE nome_sint = %s AND id_paz = %s AND inizio=%s",
@@ -506,7 +542,7 @@ class App(tk.Tk):
             self.show_frame("HomePaz", parent, utente)
             
 
-        Button(f1, text="Cancella",command = canc_sint).grid(row=0, column=1,padx=10, pady=10)
+        ttk.Button(f1, text="Cancella",command = canc_sint).grid(row=0, column=1,padx=10, pady=10)
 
         # Center the Toplevel widget on the screen
         top.update_idletasks()
@@ -697,10 +733,10 @@ class App(tk.Tk):
             self.show_frame("VisPaz", parent, utente)  #così pagina si refresha!!!!!!!!!
 
         # Create a button to close the Toplevel widget
-        Button(frame, text="Vai a paziente", command=vai_paz).grid(row=1, column=0, pady=10)
+        ttk.Button(frame, text="Vai a paziente", command=vai_paz).grid(row=1, column=0, pady=10)
 
         # Create a button to close the Toplevel widget
-        Button(frame, text="Cancella", command=delete_segn).grid(row=1, column=1, pady=10)
+        ttk.Button(frame, text="Cancella", command=delete_segn).grid(row=1, column=1, pady=10)
 
         # Center the Toplevel widget on the screen
         top.update_idletasks()
@@ -745,7 +781,7 @@ class App(tk.Tk):
             top.destroy() #distruggo pop up
             self.show_frame("VisPaz", parent, utente)
 
-        tk.Button(frame1, text="Modifica Fattori di Rischio", command=lambda: cambia_fattori(utente, text_pat.get("1.0", tk.END), parent), padx=20, pady=20).pack()
+        ttk.Button(frame1, text="Modifica Fattori di Rischio", command=lambda: cambia_fattori(utente, text_pat.get("1.0", tk.END), parent)).pack(padx=10, pady=10)
 
         # Center the Toplevel widget on the screen
         top.update_idletasks()
@@ -849,13 +885,13 @@ class App(tk.Tk):
         Label(frame, text="Quantità per dose:").grid(row=1, column=0, sticky="e")
         #Label(frame, text=values[1]).grid(row=1, column=1, sticky="w")
         qtaxdose = StringVar()
-        qtaxdose_entry = Entry(frame, width=30, textvariable=qtaxdose)
+        qtaxdose_entry = ttk.Entry(frame, width=30, textvariable=qtaxdose)
         qtaxdose_entry.grid(row=1, column=1, sticky="w")
 
         Label(frame, text="Numero dosi al di:").grid(row=2, column=0, sticky="e")
         #Label(frame, text=values[2]).grid(row=2, column=1, sticky="w")
         ndosi = StringVar()
-        ndosi_entry = Entry(frame, width=30, textvariable=ndosi)
+        ndosi_entry = ttk.Entry(frame, width=30, textvariable=ndosi)
         ndosi_entry.grid(row=2, column=1, sticky="w")
         
         # il tipo non va specificato perchè il medico inserisce solamnte terapie ipertensive
@@ -974,13 +1010,13 @@ class App(tk.Tk):
         Label(frame, text="Quantità per dose:").grid(row=1, column=0, sticky="e")
         #Label(frame, text=values[1]).grid(row=1, column=1, sticky="w")
         qtaxdose = StringVar(value=values[2])
-        qtaxdose_entry = Entry(frame, width=30, textvariable=qtaxdose)
+        qtaxdose_entry = ttk.Entry(frame, width=30, textvariable=qtaxdose)
         qtaxdose_entry.grid(row=1, column=1, sticky="w")
 
         Label(frame, text="Numero dosi al di:").grid(row=2, column=0, sticky="e")
         #Label(frame, text=values[2]).grid(row=2, column=1, sticky="w")
         ndosi = StringVar(value=values[3])
-        ndosi_entry = Entry(frame, width=30, textvariable=ndosi)
+        ndosi_entry = ttk.Entry(frame, width=30, textvariable=ndosi)
         ndosi_entry.grid(row=2, column=1, sticky="w")
 
         Label(frame, text="Data Inizio:").grid(row=3, columnspan=2)
@@ -1079,7 +1115,7 @@ class App(tk.Tk):
         # Create a button to close the Toplevel widget
         f1 = Frame(top)
         f1.pack()
-        Button(f1, text="Modifica", command=mod_ter_iper).pack(side='right', padx=10, pady=10)
+        ttk.Button(f1, text="Modifica", command=mod_ter_iper).pack(side='right', padx=10, pady=10)
 
         def iper2preg():
             # controlli sulla dataF ok
@@ -1134,7 +1170,7 @@ class App(tk.Tk):
                 top.destroy() #distruggo pop up
                 self.show_frame("ShowTerapie", parent, utente)
                 
-        Button(f1, text="Rendi Pregressa", command=iper2preg).pack(side='right', padx=10, pady=10)
+        ttk.Button(f1, text="Rendi Pregressa", command=iper2preg).pack(side='right', padx=10, pady=10)
 
         ####### cencella ter iper ######
         def cancella_ter_iper():
@@ -1155,7 +1191,7 @@ class App(tk.Tk):
             top.destroy() #distruggo pop up
             self.show_frame("ShowTerapie", parent, utente)
 
-        Button(f1, text="Cancella", command= cancella_ter_iper).pack(side='right', padx=10, pady=10)
+        ttk.Button(f1, text="Cancella", command= cancella_ter_iper).pack(side='right', padx=10, pady=10)
 
         # Center the Toplevel widget on the screen
         top.update_idletasks()
@@ -1182,11 +1218,11 @@ class App(tk.Tk):
 
         if(values[5] == "Segnalata"):
             Label(frame, text=f"""Il paziente ha segnalato la seguente terapia concomitante:
-                                        Farmaco: {values[0]}
-                                        Quantità per dose: {values[2]}
-                                        Numero di dosi: {values[3]}
-                                        Indicazioni: {values[4]}
-                                        Vuoi accetarla?""").grid(row=0, columnspan=2)
+Farmaco: {values[0]}
+Quantità per dose: {values[2]}
+Numero di dosi: {values[3]}
+Indicazioni: {values[4]}
+Vuoi accetarla?""").grid(row=0, columnspan=2)
             
             def accetta_ter_conc():
                 #creazione oggetto ter
@@ -1214,7 +1250,7 @@ class App(tk.Tk):
                     top.destroy() #distruggo pop up
                     self.show_frame("ShowTerapie", parent, utente)
 
-            Button(frame, text="Accetta", command = accetta_ter_conc).grid(row=1, column=0)
+            ttk.Button(frame, text="Accetta", command = accetta_ter_conc).grid(row=1, column=0, pady=10)
 
             def rifiuta_ter_conc():
                 self.DB.my_query("DELETE FROM terapia WHERE nome_farm=%s AND id_paz=%s AND inizio=%s", (values[0], utente.get_id_paz_selezionato(), values[1]))
@@ -1225,7 +1261,7 @@ class App(tk.Tk):
                 top.destroy() #distruggo pop up
                 self.show_frame("ShowTerapie", parent, utente)
 
-            Button(frame, text="Rifiuta", command = rifiuta_ter_conc).grid(row=1, column=1)
+            ttk.Button(frame, text="Rifiuta", command = rifiuta_ter_conc).grid(row=1, column=1, pady=10)
 
         else: # è GIà ACCETTATA
             Label(frame, text="Farmaco:").grid(row=0, column=0, sticky="e")
@@ -1234,13 +1270,13 @@ class App(tk.Tk):
             Label(frame, text="Quantità per dose:").grid(row=1, column=0, sticky="e")
             #Label(frame, text=values[1]).grid(row=1, column=1, sticky="w")
             qtaxdose = StringVar(value=values[2])
-            qtaxdose_entry = Entry(frame, width=30, textvariable=qtaxdose)
+            qtaxdose_entry = ttk.Entry(frame, width=30, textvariable=qtaxdose)
             qtaxdose_entry.grid(row=1, column=1, sticky="w")
 
             Label(frame, text="Numero dosi al di:").grid(row=2, column=0, sticky="e")
             #Label(frame, text=values[2]).grid(row=2, column=1, sticky="w")
             ndosi = StringVar(value=values[3])
-            ndosi_entry = Entry(frame, width=30, textvariable=ndosi)
+            ndosi_entry = ttk.Entry(frame, width=30, textvariable=ndosi)
             ndosi_entry.grid(row=2, column=1, sticky="w")
 
             Label(frame, text="Data Inizio:").grid(row=3, columnspan=2)
@@ -1327,8 +1363,8 @@ class App(tk.Tk):
             # Create a button to close the Toplevel widget
             f1 = Frame(top)
             f1.pack()
-            Button(f1, text="Modifica terapia", command=mod_ter_conc).pack(side='right', padx=10, pady=10) 
-            Button(f1, text="Rendi Pregressa", command=conc2preg).pack(side='right', padx=10, pady=10)
+            ttk.Button(f1, text="Modifica terapia", command=mod_ter_conc).pack(side='right', padx=10, pady=10) 
+            ttk.Button(f1, text="Rendi Pregressa", command=conc2preg).pack(side='right', padx=10, pady=10)
 
         # Center the Toplevel widget on the screen
         top.update_idletasks()

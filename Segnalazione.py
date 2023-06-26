@@ -96,7 +96,8 @@ class SegnAggTerConc(Segnalazione):
             return "Campo qtaxdose non è corretto"
         elif (ndosi == "" and ndosi is None and not ndosi.isdigit()):
             return "Il numero di dosi deve essere un numero"
-        #controll su inizio!!!!!!!!!!!!! NO prima di essere nato, NO dopo di oggi
+        elif int(ndosi) > 4:
+            return "Il numero massimo di dosi gionaliere è 4"
         else:
             return SegnAggTerConc(data, id_paz, tipo, farmaco, qtaxdose, ndosi, ind, inizio)
             

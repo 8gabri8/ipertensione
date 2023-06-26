@@ -13,7 +13,7 @@ class ShowTerapie(tk.Frame):
 
         # frame pazienti
         if(utente != None):
-            f1 = LabelFrame(self, text='Terapie ipertensive')
+            f1 = LabelFrame(self, text='Terapie ipertensive', font=controller.font)
             f1.pack(fill=BOTH, expand=True)
             
             terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz = %s", (utente.get_id_paz_selezionato(),))
@@ -33,13 +33,13 @@ class ShowTerapie(tk.Frame):
     ######### TABELLA TERAPIE IPER ###############
 
             colonne_ter_iper = ('Farmaco', 'Inizio', 'Qxdose', 'Ndosi', 'Ind')
-            tabella_ter_iper = ttk.Treeview(f1, columns=colonne_ter_iper, show='headings', )
+            tabella_ter_iper = ttk.Treeview(f1, columns=colonne_ter_iper, show='headings', style="Custom.Treeview", height=7)
             # denominazione delle colonne
-            tabella_ter_iper.column('Farmaco', anchor=CENTER)
+            tabella_ter_iper.column('Farmaco', anchor=CENTER, width=100)
             tabella_ter_iper.heading('Farmaco', text='Farmaco')
             tabella_ter_iper.column('Inizio', anchor=CENTER, width=100)
             tabella_ter_iper.heading('Inizio', text='Inizio')
-            tabella_ter_iper.column('Qxdose', anchor=CENTER)
+            tabella_ter_iper.column('Qxdose', anchor=CENTER, width=100)
             tabella_ter_iper.heading('Qxdose', text='Qxdose')
             tabella_ter_iper.column('Ndosi', anchor=CENTER, width=100)
             tabella_ter_iper.heading('Ndosi', text='Ndosi')
@@ -49,13 +49,14 @@ class ShowTerapie(tk.Frame):
             for record in ter_iper:
                 tabella_ter_iper.insert('', END, values=[record[0], record[2], record[3], record[4], record[5]])
 
-            tabella_ter_iper.grid(row=0, column=0)
+            f1.grid_columnconfigure(0, weight=1)
+            tabella_ter_iper.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
 
             tabella_ter_iper.bind("<Double-1>", lambda event: controller.OnDoubleClick_mod_ter_iper(event, utente, tabella_ter_iper, parent))
 
         ############## AGGIUNGI TER IPER #####################
 
-            b = Button(f1, text="Aggiungi\nterapia", command=lambda : controller.aggiungi_ter_iper(utente, parent)).grid(row=0, column=2)
+            b = ttk.Button(f1, text="Aggiungi\nterapia", command=lambda : controller.aggiungi_ter_iper(utente, parent), style='Custom.TButton').grid(row=0, column=2, padx=10, pady=10)
 
             # aggiungo la scrollbar
             s1 = ttk.Scrollbar(f1, orient=VERTICAL, command=tabella_ter_iper.yview)
@@ -63,17 +64,17 @@ class ShowTerapie(tk.Frame):
             tabella_ter_iper.configure(yscrollcommand=s1.set)
 
         ####CONCOMITANTI
-            f2 = LabelFrame(self, text='Terapie concomitanti')
+            f2 = LabelFrame(self, text='Terapie concomitanti', font=controller.font)
             f2.pack(fill=BOTH, expand=True)
             # faccio il treeview
             colonne_ter_conc = ('Farmaco', 'Inizio', 'Qxdose', 'Ndosi', 'Ind', 'Tipo')
-            tabella_ter_conc = ttk.Treeview(f2, columns=colonne_ter_conc, show='headings', )
+            tabella_ter_conc = ttk.Treeview(f2, columns=colonne_ter_conc, show='headings', style="Custom.Treeview", height=7)
             # denominazione delle colonne
-            tabella_ter_conc.column('Farmaco', anchor=CENTER)
+            tabella_ter_conc.column('Farmaco', anchor=CENTER, width=100)
             tabella_ter_conc.heading('Farmaco', text='Farmaco')
             tabella_ter_conc.column('Inizio', anchor=CENTER, width=100)
             tabella_ter_conc.heading('Inizio', text='Inizio')
-            tabella_ter_conc.column('Qxdose', anchor=CENTER)
+            tabella_ter_conc.column('Qxdose', anchor=CENTER, width=100)
             tabella_ter_conc.heading('Qxdose', text='Qxdose')
             tabella_ter_conc.column('Ndosi', anchor=CENTER, width=100)
             tabella_ter_conc.heading('Ndosi', text='Ndosi')
@@ -81,7 +82,8 @@ class ShowTerapie(tk.Frame):
             tabella_ter_conc.heading('Tipo', text='Tipo')
             tabella_ter_conc["displaycolumns"]=("Farmaco", "Inizio", "Qxdose", "Ndosi", "Tipo")
 
-            tabella_ter_conc.grid(row=0, column=0)
+            f2.grid_columnconfigure(0, weight=1)
+            tabella_ter_conc.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
 
             # inserimento dati nella tabella
             #(nome_farm, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
@@ -100,12 +102,12 @@ class ShowTerapie(tk.Frame):
 
 
         #PREGRESSE
-            f3 = LabelFrame(self, text='Terapie pregrese')
+            f3 = LabelFrame(self, text='Terapie pregrese', font=controller.font)
             f3.pack(fill=BOTH, expand=True)
 
             # faccio il treeview
             colonne_ter_preg = ('Farmaco', 'Inizio', 'Qxdose', 'Ndosi', 'Fine')
-            tabella_ter_preg = ttk.Treeview(f3, columns=colonne_ter_preg, show='headings', )
+            tabella_ter_preg = ttk.Treeview(f3, columns=colonne_ter_preg, show='headings', style="Custom.Treeview", height=7)
             # denominazione delle colonne
             tabella_ter_preg.column('Farmaco', anchor=CENTER)
             tabella_ter_preg.heading('Farmaco', text='Farmaco')
@@ -121,8 +123,9 @@ class ShowTerapie(tk.Frame):
             for record in ter_preg:
                 #(farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
                 tabella_ter_preg.insert('', END, values=[record[0], record[2], record[3], record[4], record[7]])
-                
-            tabella_ter_preg.grid(row=0, column=0, sticky="nsew")
+
+            f3.grid_columnconfigure(0, weight=1)   
+            tabella_ter_preg.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
 
             # aggiungo la scrollbar
             s3= ttk.Scrollbar(f3, orient=VERTICAL, command=tabella_ter_preg.yview)
@@ -132,4 +135,4 @@ class ShowTerapie(tk.Frame):
     ####### INDIETRO #####################################
             def indietro():
                 controller.show_frame("VisPaz", parent, utente)
-            Button(self, text="Indietro", command=indietro).pack()
+            ttk.Button(self, text="Indietro", command=indietro, style='Custom.TButton', width=30).pack(padx=10, pady=10)

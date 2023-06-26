@@ -184,7 +184,7 @@ class VisPaz(tk.Frame):
             #print(datiP)
             # soluzione con treeview
             colonne_segn =  ('Cod', 'Data', 'id_paz', 'Tipo', 'Gravita')
-            tabella_segn = ttk.Treeview(frame2, columns=colonne_segn, show='headings', style="Custom.Treeview", height=5)
+            tabella_segn = ttk.Treeview(frame2, columns=colonne_segn, show='headings', style="Custom.Treeview", height=5) 
             # denominazione delle colonne
             tabella_segn.column('Cod', anchor=CENTER); tabella_segn.heading('Cod', text='Codice')
             tabella_segn.column('Data', anchor=CENTER); tabella_segn.heading('Data', text='Data')

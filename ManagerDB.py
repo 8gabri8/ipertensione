@@ -13,7 +13,7 @@ class ManagerDB():
         self.hostname = "localhost"
         self.database = "postgres"
         self.username = "postgres"
-        self.pwd = "8.PosGre.8"
+        self.pwd = "06012001"
         self.port_id = "5432"
 
     def my_query(self, query, par=None):

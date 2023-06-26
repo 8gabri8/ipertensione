@@ -1,9 +1,10 @@
 TODO
-+ aggiungere cancella sintomo
-+ dire che abbaimo fatto sia ben divisi voiew lodel per msotrare bene, mentre poi per tutti altri casi abbiamo fatto pop up
++ aggiungere cancella sintomo in documetazione
++ aggiungere salba immagine rpecssion in documetazione
 + rimettere pop up in Conroller --> CMABIRE SCHEMI!!!!!!!!
     homepaz: segna ter conc
     modpaz: oncdoulbe click_pat_cponc()
+    vis pressioni, quello lop lascerei separato!!!! lo abbiamo fatto perchè c'è matplotlib e perchè è condivso anche con dati peroanli di paziente
 + contrlalre package di ipertendsione
 +  sceirvere che medico può salvare immaginbe
 
@@ -14,10 +15,6 @@ TODO
    PAZ IPERTESO
    STUD MED
 
-
-
-- (DEPLOY)
-
 - RICONTROLLARE TUTTI DIAGRAMMI E FILE OVERLEAF (INSEIRE DIAGRAMMI)
     + diegrammi classi
     + diagrammi seiwqnce
@@ -26,7 +23,7 @@ TODO
 
 - STRESS TEST
 
-
+- (DEPLOY)
 
 
 FORSE AGGIUNGERE NLE CODICE
@@ -34,10 +31,7 @@ FORSE AGGIUNGERE NLE CODICE
 - mettere __ in attr provati
 
 SCLETE LECITE BY COMBI
--ikl medico e TERAPIE:
-- medico può vedere solo sintomi in croso, E non può mdoifciarli ne renderlri pregressi
-- quando si profrssa una aptologia anche se si modifcano gli altri campi, non hanno efetto, qundo si rende rpegrssa si immette solko la data di fine
-- 
+
 
 DETTAGLI IMPLETATIVI
 - quando paz NON si logga NON vengono isnerite tuple
@@ -51,6 +45,7 @@ DETTAGLI IMPLETATIVI
 - classid ella view sono vuote
 -associanzioni anche se c'è solo un attr
 - no looop inc otrlli di seiqince
+- ndosi < 4
 
 DOMANDE COMBI
 - ci spieghi il patern DAO. Noi lo abbiamo fatto? anche se non c'è interfACCIA?

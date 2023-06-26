@@ -2,7 +2,8 @@ from my_library import *
 import matplotlib
 matplotlib.use('TkAgg')
 import numpy as np
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
+import re 
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
@@ -52,7 +53,7 @@ class DatiPersonali(tk.Frame):
                 elif(record[6] == "conc"): t = "Concomitante"
                 else: t="Ipertensiva"
                 ind = record[5]
-                if(record[5] == ""): ind = "Nessuna indicazione specificata"
+                if(record[5] == "" or record[5] == None or re.match(r'^[ \n\t]*$', record[5]) is not None): ind = "Nessuna indicazione specificata"
                 tabella_ter.insert('', END, values=[record[0], record[2], record[3], record[4], t, ind])
 
             tabella_ter.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)

@@ -21,46 +21,46 @@ class HomePaz(tk.Frame):
                             command=lambda: controller.verifica_esistenza_dati_gior(utente, parent), width=30).pack(pady=10)
             
 ################## AGGIUNGI PAT CONC #####################
-            def add_pat_conc(utente, parent):
-                top = Toplevel()
-                top.title("Segnala patologia concomitante")
+            #def add_pat_conc(utente, parent):
+                # top = Toplevel()
+                # top.title("Segnala patologia concomitante")
 
-                frame = LabelFrame(top, text="Segnala patologia concomitante")
-                frame.pack(fill="both", expand=True, padx=10, pady=10)
+                # frame = LabelFrame(top, text="Segnala patologia concomitante")
+                # frame.pack(fill="both", expand=True, padx=10, pady=10)
 
-                Label(frame, text="Nome patologia:").grid(row=0, column=0, sticky="e")
-                cb_pat = ttk.Combobox(frame)
-                pat = controller.DB.my_query("SELECT Nome FROM Patologia", None)
-                pat = [str(item[0]) for item in pat]
-                cb_pat["values"] = pat
-                cb_pat.grid(row=0,column=1, sticky="w")
-                cb_pat["state"] = "readonly"
+                # Label(frame, text="Nome patologia:").grid(row=0, column=0, sticky="e")
+                # cb_pat = ttk.Combobox(frame)
+                # pat = controller.DB.my_query("SELECT Nome FROM Patologia", None)
+                # pat = [str(item[0]) for item in pat]
+                # cb_pat["values"] = pat
+                # cb_pat.grid(row=0,column=1, sticky="w")
+                # cb_pat["state"] = "readonly"
                 
-                Label(frame, text="Data di inizio della patologia:").grid(row=1, column=0, sticky="e")
+                # Label(frame, text="Data di inizio della patologia:").grid(row=1, column=0, sticky="e")
 
-                cal = Calendar(frame, selectmode='day', date_pattern='yyyy-mm-dd') # Change the date pattern here
-                cal.grid(row=1, column=1, sticky="w")
-                cal.grid(pady=10, padx=10)
+                # cal = Calendar(frame, selectmode='day', date_pattern='yyyy-mm-dd') # Change the date pattern here
+                # cal.grid(row=1, column=1, sticky="w")
+                # cal.grid(pady=10, padx=10)
 
-                # Create a button to close the Toplevel widget
-                f1 = Frame(top)
-                f1.pack()
-                Button(f1, text="Conferma",command = lambda: controller.segnala_pat_conc(utente, cb_pat.get(), datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d'),
-                                                                                          top, parent)).pack(side='right', padx=10, pady=10)
+                # # Create a button to close the Toplevel widget
+                # f1 = Frame(top)
+                # f1.pack()
+                # ttk.Button(f1, text="Conferma",command = lambda: controller.segnala_pat_conc(utente, cb_pat.get(), datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d'),
+                #                                                                           top, parent)).pack(side='right', padx=10, pady=10)
 
-                # Center the Toplevel widget on the screen
-                top.update_idletasks()
-                w = top.winfo_screenwidth()
-                h = top.winfo_screenheight()
-                size = tuple(int(_) for _ in top.geometry().split('+')[0].split('x'))
-                x = w/2 - size[0]/2
-                y = h/2 - size[1]/2
-                top.geometry("%dx%d+%d+%d" % (size + (x, y)))
+                # # Center the Toplevel widget on the screen
+                # top.update_idletasks()
+                # w = top.winfo_screenwidth()
+                # h = top.winfo_screenheight()
+                # size = tuple(int(_) for _ in top.geometry().split('+')[0].split('x'))
+                # x = w/2 - size[0]/2
+                # y = h/2 - size[1]/2
+                # top.geometry("%dx%d+%d+%d" % (size + (x, y)))
 
-                top.grab_set() # per bloccare la finestram pop up
+                # top.grab_set() # per bloccare la finestram pop up
 
             ttk.Button(self, text="Segnala patologia concomitante", style='Custom.TButton',
-                            command=lambda: add_pat_conc(utente, parent), width=30).pack(pady=10)
+                            command=lambda: controller.segnala_pat_conc(utente, parent), width=30).pack(pady=10)
 
 ################## SEGNALA TERAPIA CONC #####################
 

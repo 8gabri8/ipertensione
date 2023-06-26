@@ -193,7 +193,6 @@ class App(tk.Tk):
         f1 = Frame(top)
         f1.pack()
 
-
         def add_to_DB():
             nome_pat = cb_pat.get()
             data_pat_conc = datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')

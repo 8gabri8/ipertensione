@@ -1,11 +1,7 @@
 TODO
 + aggiungere cancella sintomo in documetazione
 + aggiungere salba immagine rpecssion in documetazione
-+ rimettere pop up in Conroller --> CMABIRE SCHEMI!!!!!!!!
-    modpaz: oncdoulbe click_pat_cponc()
-    vis pressioni, quello lop lascerei separato!!!! lo abbiamo fatto perchè c'è matplotlib e perchè è condivso anche con dati peroanli di paziente
 + contrlalre package di ipertendsione
-+  sceirvere che medico può salvare immaginbe
 
 - BELLEZZA 
 + aggiungere scrollbar ad inseirmto dati giuoinalieri
@@ -45,6 +41,8 @@ DETTAGLI IMPLETATIVI
 -associanzioni anche se c'è solo un attr
 - no looop inc otrlli di seiqince
 - ndosi < 4
+- vis pressioni, quello lop lascerei separato!!!! lo abbiamo fatto perchè c'è matplotlib e perchè è condivso anche con dati peroanli di paziente
+
 
 DOMANDE COMBI
 - ci spieghi il patern DAO. Noi lo abbiamo fatto? anche se non c'è interfACCIA?

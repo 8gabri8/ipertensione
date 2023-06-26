@@ -21,7 +21,7 @@ class StartPage(tk.Frame): #ogni pagina è un framwe, che semplcietne viene fatt
 
         ID = StringVar()
         ID_entry = ttk.Entry(self, textvariable=ID, width=30, font=controller.font)
-        ID_entry.insert(0, "P000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
+        ID_entry.insert(0, "M000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
         ID_entry.grid(row=1, column=1, sticky="w", padx=10, pady=10)
         ID_entry.focus() #inzio cersore su di lui
 
@@ -30,7 +30,7 @@ class StartPage(tk.Frame): #ogni pagina è un framwe, che semplcietne viene fatt
 
         psw = StringVar()
         psw_entry = ttk.Entry(self, textvariable=psw, show="*", width=30, font=controller.font) #così psw è nascosta
-        psw_entry.insert(0, "p000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
+        psw_entry.insert(0, "m000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
         psw_entry.grid(row=2, column=1, sticky="w", padx=10, pady=10)
 
 

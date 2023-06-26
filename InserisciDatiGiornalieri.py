@@ -39,8 +39,8 @@ class InserisciDatiGiornalieri(tk.Frame):
             widget = [] # contiene gli oggetti widget
 
             def addP():
-                if(self.c>6):
-                    messagebox.showinfo(message="Non puoi immettre più di 6 misurazioni al giorno.")
+                if(self.c>5):
+                    messagebox.showinfo(message="Non puoi immettre più di 5 misurazioni al giorno.")
                 else:
                     pmin.append(StringVar(value="inserisci"))
                     pmax.append(StringVar(value="inserisci"))

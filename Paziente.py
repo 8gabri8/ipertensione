@@ -6,20 +6,20 @@ class Paziente(Utente):
     def __init__(self, ID, nome, cognome, mail, dataN, fatt_risc, id_med_ref):
         Utente.__init__(self, ID, nome, cognome, mail, dataN)
         
-        self.fatt_risc = fatt_risc
-        self.id_med_ref = id_med_ref
+        self.__fatt_risc = fatt_risc
+        self.__id_med_ref = id_med_ref
 
     # metodi get
     def get_fatt_risc(self):
-        return self.fatt_risc
+        return self.__fatt_risc
     def get_id_med_ref(self):
-        return self.id_med_ref
+        return self.__id_med_ref
 
     # metodi set
     def set_fatt_risc(self, fatt_risc):
-        self.fatt_risc = fatt_risc
+        self.__fatt_risc = fatt_risc
     def set_id_med_ref(self, id_med_ref):
-        self.id_med_ref = id_med_ref
+        self.__id_med_ref = id_med_ref
 
     @staticmethod
     #NB dataN è stringa!!!
@@ -40,7 +40,7 @@ class Paziente(Utente):
         #controllo su id_med_ref non serve perchè il combo box fornisc egià le scletre possbili
         
     def to_tupla(self):
-        return super().to_tupla() + (self.fatt_risc, self.id_med_ref)
+        return super().to_tupla() + (self.get_fatt_risc(), self.get_id_med_ref())
     
     
    

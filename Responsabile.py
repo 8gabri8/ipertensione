@@ -8,11 +8,11 @@ class Responsabile(Utente):
         
     # metodi get
     def get_tipo_utente_aggiunto(self):
-        return self.tipo_utente_aggiunto
+        return self.__tipo_utente_aggiunto
     
     # metodi set
     def set_tipo_utente_aggiunto(self, tipo_utente_aggiunto):
-        self.tipo_utente_aggiunto = tipo_utente_aggiunto
+        self.__tipo_utente_aggiunto = tipo_utente_aggiunto
     
     @staticmethod
     def create_utente(ID, nome, cognome, mail, dataN):

@@ -1151,7 +1151,7 @@ class App(tk.Tk):
 
             #creazione oggetto ter
             #(farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine):
-            ter = Terapia(  
+            ter = Terapia.create_terapia(  
                             values[0], 
                             utente.get_id_paz_selezionato(), 
                             values[1],
@@ -1227,7 +1227,7 @@ class App(tk.Tk):
             
             def accetta_ter_conc():
                 #creazione oggetto ter
-                ter = Terapia(  
+                ter = Terapia.create_terapia(  
                                 values[0], 
                                 utente.get_id_paz_selezionato(), 
                                 values[1],
@@ -1239,7 +1239,8 @@ class App(tk.Tk):
 
                 # update
                 if(type(ter) == str):
-                    pass#messaggi di errore
+                    messagebox.showinfo(message=ter, parent=top)
+                    return
                 else:
                     #(nome_farm, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
                     self.DB.my_query("UPDATE terapia SET nome_farm = %s, id_paz = %s, inizio=%s, qtaxdose = %s, ndosi = %s, ind = %s, tipo = %s, fine=%s WHERE id_paz=%s AND nome_farm=%s AND inizio=%s", 
@@ -1302,7 +1303,8 @@ class App(tk.Tk):
 
             def mod_ter_conc():
                 #creazione oggetto ter
-                ter = Terapia(  
+                # farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine):
+                ter = Terapia.create_terapia(  
                                 values[0], 
                                 utente.get_id_paz_selezionato(), 
                                 cal_inizio.selection_get().strftime('%Y-%m-%d'),
@@ -1314,7 +1316,8 @@ class App(tk.Tk):
 
                 # update
                 if(type(ter) == str):
-                    pass#messaggi di errore
+                    messagebox.showinfo(message=ter, parent=top)
+                    return
                 else:
                     #(nome_farm, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
                     self.DB.my_query("UPDATE terapia SET nome_farm = %s, id_paz = %s, inizio=%s, qtaxdose = %s, ndosi = %s, ind = %s, tipo = %s, fine=%s WHERE id_paz=%s AND nome_farm=%s AND inizio=%s", 
@@ -1328,7 +1331,7 @@ class App(tk.Tk):
 
             def conc2preg():
                 #creazione oggetto ter
-                ter = Terapia(  
+                ter = Terapia.create_terapia(  
                                 values[0], 
                                 utente.get_id_paz_selezionato(), 
                                 cal_inizio.selection_get().strftime('%Y-%m-%d'),
@@ -1588,7 +1591,8 @@ class App(tk.Tk):
         for segn in segnalazioni:
             s = Segnalazione.create_segnalazione(segn[0], segn[1], segn[2], segn[3])
             if(type(s) == str):
-                pass
+                messagebox.showinfo(message=s)
+                return
             else:
                 self.DB.my_query("INSERT INTO Segnalazione (data, id_paz, tipo, gravita) VALUES (%s,%s,%s,%s)", s.to_tupla())
 
@@ -1651,7 +1655,8 @@ class App(tk.Tk):
                 if(no_log+no_corr == 3):
                     s = Segnalazione.create_segnalazione(oggi_str, paz, 'no_segue', None)
                     if(type(s) == str):
-                        pass
+                        messagebox.showinfo(message=s)
+                        return
                     else:
                         self.DB.my_query("INSERT INTO Segnalazione (data, id_paz, tipo, gravita) VALUES (%s,%s,%s,%s)", s.to_tupla())
 

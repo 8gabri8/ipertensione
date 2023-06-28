@@ -1,40 +1,40 @@
 class Sintomo:
     def __init__(self, nome_sint, id_paz, inizio, tipo, fine):
-        self.nome_sint = nome_sint
-        self.id_paz = id_paz
-        self.inizio = inizio
-        self.tipo = tipo
-        self.fine = fine
+        self.__nome_sint = nome_sint
+        self.__id_paz = id_paz
+        self.__inizio = inizio
+        self.__tipo = tipo
+        self.__fine = fine
 
     def get_nome_sint(self):
-        return self.nome_sint
+        return self.__nome_sint
 
     def set_nome_sint(self, nome_sint):
-        self.nome_sint = nome_sint
+        self.__nome_sint = nome_sint
 
     def get_id_paz(self):
-        return self.id_paz
+        return self.__id_paz
 
     def set_id_paz(self, id_paz):
-        self.id_paz = id_paz
+        self.__id_paz = id_paz
 
     def get_inizio(self):
-        return self.inizio
+        return self.__inizio
 
     def set_inizio(self, inizio):
-        self.inizio = inizio
+        self.__inizio = inizio
 
     def get_tipo(self):
-        return self.tipo
+        return self.__tipo
 
     def set_tipo(self, tipo):
-        self.tipo = tipo
+        self.__tipo = tipo
 
     def get_fine(self):
-        return self.fine
+        return self.__fine
 
     def set_fine(self, fine):
-        self.fine = fine
+        self.__fine = fine
 
 
     # Metodo statico per creare un oggetto Terapia
@@ -50,4 +50,4 @@ class Sintomo:
 
     # Metodo che ritorna la tupla contenente gli attributi dell'oggetto
     def to_tupla(self):
-        return (self.nome_sint, self.id_paz, self.inizio, self.tipo, self.fine)
+        return (self.get_nome_sint(), self.get_id_paz(), self.get_inizio(), self.get_tipo(), self.get_fine())

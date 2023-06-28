@@ -8,10 +8,10 @@ class Medico(Utente):
         Utente.__init__(self, ID, nome, cognome, mail, dataN)
 
     def set_id_paz_selezionato(self, id_paz): #passo Id paz e medico salva in se CODICO di paz selezioanto
-        self.id_paz_selezionato = id_paz
+        self.__id_paz_selezionato = id_paz
 
     def get_id_paz_selezionato(self): #passo Id paz e medico salva in se CODICO di paz selezioanto
-        return self.id_paz_selezionato
+        return self.__id_paz_selezionato
     
     @staticmethod
     def create_utente(ID, nome, cognome, mail, dataN):

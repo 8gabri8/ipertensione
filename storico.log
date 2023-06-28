@@ -148,3 +148,13 @@ DEBUG:PIL.PngImagePlugin:STREAM b'sBIT' 41 4
 DEBUG:PIL.PngImagePlugin:b'sBIT' 41 4 (unknown)
 DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 57 9
 DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 78 364
+INFO:root:Il medico M000001 ha accettato la seguente patologia concomitante:ASMA, 2023-06-28 per il paziente P000001
+INFO:root:Il medico M000001 ha accettato la seguente patologia concomitante:DISTURBI ENDOCRINI, 2023-06-28 per il paziente P000001
+INFO:root:Il medico M000001 ha aggiunto la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001
+INFO:root:Il medico M000001 ha modificato la seguente terapia concomitante:CETIRIZINA, 2022-06-15 per il paziente P000001

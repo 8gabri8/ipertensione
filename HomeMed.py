@@ -14,7 +14,7 @@ class HomeMed(tk.Frame):
             controller.segn_no_segue(datetime.now(), parent)
 
     ######TABELLA PAZIENTE
-            f1 = LabelFrame(self, text='I tuoi Pazienti')
+            f1 = LabelFrame(self, text='I tuoi Pazienti', font=controller.font)
             f1.pack(fill=BOTH, expand=True)
             datiP = controller.DB.my_query("SELECT ID, Nome, Cognome FROM utente WHERE ID LIKE 'P%' ORDER BY COGNOME, NOME", None) # va messo None quando non si inserisce nulla nella query
         
@@ -45,7 +45,7 @@ class HomeMed(tk.Frame):
             datiS = controller.DB.my_query("SELECT cod, data, id_paz, tipo, gravita FROM segnalazione ORDER BY data DESC",
                              None)
             ## frame segnalazioni
-            f2 = LabelFrame(self, text='Segnalazioni')
+            f2 = LabelFrame(self, text='Segnalazioni', font=controller.font)
             f2.pack(fill=BOTH, expand=True)
             # risultato dei dati della query delle segnalazioni 
 
@@ -67,7 +67,11 @@ class HomeMed(tk.Frame):
 
             # aggiungo i record che mi ritornano dalla query
             for record in datiS:
-                tabella_seg.insert('', END, values=record)
+                if record[3] == "no_segue":
+                    tipo = "Non segue Terapia"
+                if record[3] =="p_anomala":
+                    tipo = "Pressione anomala"
+                tabella_seg.insert('', END, values=[record[0], record[1], record[2], tipo, record[4]])
 
             tabella_seg.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 

@@ -2,6 +2,8 @@ from my_library import *
 from Paziente import *
 from Medico import *
 from Responsabile import *
+from tkinter import PhotoImage
+import os
 
 class StartPage(tk.Frame): #ogni pagina è un framwe, che semplcietne viene fatto rise quando si vuole vedere
 
@@ -21,7 +23,7 @@ class StartPage(tk.Frame): #ogni pagina è un framwe, che semplcietne viene fatt
 
         ID = StringVar()
         ID_entry = ttk.Entry(self, textvariable=ID, width=30, font=controller.font)
-        ID_entry.insert(0, "M000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
+        ID_entry.insert(0, "P000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
         ID_entry.grid(row=1, column=1, sticky="w", padx=10, pady=10)
         ID_entry.focus() #inzio cersore su di lui
 
@@ -30,10 +32,26 @@ class StartPage(tk.Frame): #ogni pagina è un framwe, che semplcietne viene fatt
 
         psw = StringVar()
         psw_entry = ttk.Entry(self, textvariable=psw, show="*", width=30, font=controller.font) #così psw è nascosta
-        psw_entry.insert(0, "m000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
+        psw_entry.insert(0, "p000001") #SOLO PER TESTING VA T0LTO !!!!!!!!!
         psw_entry.grid(row=2, column=1, sticky="w", padx=10, pady=10)
 
 
         button = ttk.Button(self, text="Login", style='Custom.TButton',
                         command= lambda: controller.login(ID.get(), psw.get(), parent), width=20)
         button.grid(row=3, columnspan=2, pady=10)
+
+        # cwd = os.getcwd()
+        # #image = PhotoImage(file=os.path.join(cwd, "cuore.png"))
+        # image = PhotoImage(file="./cuore.png")
+        # Label(self, image=image).grid(row=4, columnspan=2)
+
+        from PIL import Image, ImageTk
+
+        image = Image.open("./cuore.png")
+        image = image.resize((600, 600), Image.ANTIALIAS)
+        photo = ImageTk.PhotoImage(image)
+        
+
+        label = Label(self, image = photo)
+        label.image = photo
+        label.grid(row=4, columnspan=2)

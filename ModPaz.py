@@ -11,13 +11,13 @@ class ModPaz(tk.Frame):
             #(id, nome, cognome, mail, dataN, hash_psw, fatt_risc, id_med_ref)
             
             frame0 = LabelFrame(self, text="Paziente", font=controller.font)
-            frame0.pack(fill="x")
+            frame0.pack(fill="x", padx=10)
             Label(frame0, text=f"Stai osservando il paziente:\n{dati[0][1]} {dati[0][2]}, ID: {dati[0][0]}", font=controller.font).pack()
 
 #################### TABELLA PAT PREGRESSE ###################
 
             frame2 = LabelFrame(self, text="Patologie pregresse", font=controller.font)
-            frame2.pack(fill="x")
+            frame2.pack(fill="x", padx=10)
             #(nome_pat, id_paz, inizio, tipo, fine)
             datiP = controller.DB.my_query("SELECT Nome_pat, inizio, fine FROM occ_patologia WHERE id_paz = %s AND tipo = %s", (utente.get_id_paz_selezionato(), "preg"))
 
@@ -121,7 +121,7 @@ class ModPaz(tk.Frame):
 ##################### TABELLA PAT CONCOMITANTI ######################################
             # PATOLOGIA COMCOMINanti
             frame3 = LabelFrame(self, text="Patologie concomitanti", font=controller.font)
-            frame3.pack(fill="x")
+            frame3.pack(fill="x", padx=10)
 
             #(nome_pat, id_paz, inizio, tipo, fine)
             datiC = controller.DB.my_query("SELECT nome_pat, inizio, tipo FROM occ_patologia WHERE id_paz = %s AND (tipo = 'conc' OR tipo='segn_pat_conc')", (utente.get_id_paz_selezionato(),))

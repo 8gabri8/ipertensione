@@ -38,6 +38,8 @@ class Segnalazione():
     def create_segnalazione(data, id_paz, tipo, gravita):
         if (): #essendo ter_conc , farmaco NON deve essere scelto da dizionario
             pass
+        # if tipo not in ["conc", "preg"]:
+        #     return "Tipo non esistente"
         else:
             return Segnalazione(data, id_paz, tipo, gravita)
 

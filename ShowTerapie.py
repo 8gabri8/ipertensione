@@ -14,7 +14,7 @@ class ShowTerapie(tk.Frame):
         # frame pazienti
         if(utente != None):
             f1 = LabelFrame(self, text='Terapie ipertensive', font=controller.font)
-            f1.pack(fill=BOTH, expand=True)
+            f1.pack(fill="x", padx=10)
             
             terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz = %s", (utente.get_id_paz_selezionato(),))
             #(nome_farm, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
@@ -65,7 +65,7 @@ class ShowTerapie(tk.Frame):
 
         ####CONCOMITANTI
             f2 = LabelFrame(self, text='Terapie concomitanti', font=controller.font)
-            f2.pack(fill=BOTH, expand=True)
+            f2.pack(fill="x", padx=10)
             # faccio il treeview
             colonne_ter_conc = ('Farmaco', 'Inizio', 'Qxdose', 'Ndosi', 'Ind', 'Tipo')
             tabella_ter_conc = ttk.Treeview(f2, columns=colonne_ter_conc, show='headings', style="Custom.Treeview", height=7)
@@ -103,7 +103,7 @@ class ShowTerapie(tk.Frame):
 
         #PREGRESSE
             f3 = LabelFrame(self, text='Terapie pregrese', font=controller.font)
-            f3.pack(fill=BOTH, expand=True)
+            f3.pack(fill="x", padx=10)
 
             # faccio il treeview
             colonne_ter_preg = ('Farmaco', 'Inizio', 'Qxdose', 'Ndosi', 'Fine')

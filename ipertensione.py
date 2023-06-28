@@ -5,7 +5,7 @@ from my_frames import *
 import logging
 from ManagerDB import *
 from UtenteFactory import *
-from Sintomo import *
+from Sintomo import * 
 
 class App(tk.Tk): 
     #App è specializzazione di classe Tk, ovvero classe che crea l'allizaione in tkinter (essenzialmete crea la prima finestra iniziale)
@@ -23,10 +23,10 @@ class App(tk.Tk):
 
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        window_width = screen_width
+        window_width = screen_width -100
         window_height = screen_height -100
-        x = (screen_width - window_width) // 2
-        y = ((screen_height - window_height) // 2)-50
+        x = ((screen_width - window_width) // 2)-50
+        y = ((screen_height - window_height) // 2)-30
         self.geometry(f"{window_width}x{window_height}+{x}+{y}")
 
         
@@ -716,7 +716,7 @@ class App(tk.Tk):
         frame = LabelFrame(top, text="Segnalazione")
         frame.pack(fill="both", expand=True, padx=10, pady=10)                
 
-        if(tipo == "p_anomala"):
+        if(tipo == "Pressione anomala"):
             #(data, id_paz, tipo, gravita)      
             Label(frame, text="Il giorno {}, il paziente {} ha avuto valori di pressioni anomali, \ncon gravità: {}".format(
                                 values[1], values[2], values[4] )).grid(row=0, columnspan=2)

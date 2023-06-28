@@ -1,29 +1,27 @@
 TODO
-+ aggiungere cancella sintomo in documetazione
-+ aggiungere salba immagine rpecssion in documetazione
 + contrlalre package di ipertendsione
++ mettere attr __attr
++ prova 
+    repsonabile
+    paziente
++ stress test
++ cpaire riga strana di singleton
++ controllare sequnce diagram
++ constrllare class diagrams --Z CAMVIANO SE METTIAMO __ATTR
 
-- BELLEZZA 
 + aggiungere scrollbar ad inseirmto dati giuoinalieri
 
 + TEST SU UTENTI
    PAZ IPERTESO
    STUD MED
 
-- RICONTROLLARE TUTTI DIAGRAMMI E FILE OVERLEAF (INSEIRE DIAGRAMMI)
-    + diegrammi classi
-    + diagrammi seiwqnce
-    + capire riga strrana di singletons
-    +schema relazionale
-
-- STRESS TEST
 
 - (DEPLOY)
 
 
 FORSE AGGIUNGERE NLE CODICE
 - non cancellare misurazioni di rpessioni se fifaccio dati giornata
-- mettere __ in attr provati
+- cambiare psw
 
 SCLETE LECITE BY COMBI
 

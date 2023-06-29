@@ -1454,11 +1454,14 @@ class App(tk.Tk):
             return
             
          #creo ogetto segn_pat
-        pat_conc = PatConc.create_patologia(nome_pat_conc_new, utente.get_ID(), data_inizio_pat_conc_new)
+        pat_conc = PatConc.create_patologia(nome_pat_conc_new,
+                                             utente.get_ID(), 
+                                             data_inizio_pat_conc_new)
         
         #values[0] contine il nome della aptologia prima che enga moficiata, quindi il nome che c'0è sul DB
         self.DB.my_query("UPDATE occ_patologia SET nome_pat =%s, inizio=%s WHERE id_paz=%s AND nome_pat=%s AND inizio=%s", 
-        pat_conc.to_tupla_update() + (utente.get_id_paz_selezionato(), nome_pat_conc_old, data_inizio_pat_conc_old))
+        (pat_conc.get_nome(), pat_conc.get_inizio()) + (utente.get_id_paz_selezionato(), nome_pat_conc_old, data_inizio_pat_conc_old))
+        
         popup.destroy() #distruggo pop up
         self.show_frame("ModPaz", parent, utente)
 

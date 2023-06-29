@@ -155,7 +155,7 @@ class VisPaz(tk.Frame):
 
 
                 b_andamento = ttk.Button(frame1, text="Mostra andamento", 
-                                command=lambda: grafico_mese() if anno.get() and mese.get() else None)
+                                command=lambda: grafico_mese() if anno.get() and mese.get() else None) #solo se hanno isneirto mese a anno grafico_nmese è invocata
                 b_andamento.grid(row=3, column=1, pady=10)
 
                 window.grab_set() 
@@ -205,7 +205,7 @@ class VisPaz(tk.Frame):
             s1.grid(row=0, column=2, sticky='ns')
             tabella_segn.configure(yscrollcommand=s1.set)
 
-            def OnDoubleClick(event):
+            def OnDoubleClick_info(event):
                 item = tabella_segn.selection()[0]
                 values = tabella_segn.item(item, "values")
                 tipo = values[3]
@@ -229,7 +229,7 @@ class VisPaz(tk.Frame):
 
                 top.grab_set()
 
-            tabella_segn.bind("<Double-1>", OnDoubleClick)
+            tabella_segn.bind("<Double-1>", OnDoubleClick_info)
 
     #######TABELLA SINTOMI IN CORSO############
 

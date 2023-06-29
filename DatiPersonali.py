@@ -63,11 +63,11 @@ class DatiPersonali(tk.Frame):
             # s1.grid(row=0, column=1, sticky='ns')
             # tabella_sin.configure(yscrollcommand=s1.set)
 
-            def popup(event):
+            def popup_ind(event):
                 id_riga= tabella_ter.selection()[0]
                 values = tabella_ter.item(id_riga, "values")
                 messagebox.showinfo(title= "Indicazioni", message=values[5])#NB indice della tabella
-            tabella_ter.bind("<Double-1>",lambda event: popup(event))
+            tabella_ter.bind("<Double-1>",lambda event: popup_ind(event))
 
 
 ##################### TABELLA PATOLOGIE #####################

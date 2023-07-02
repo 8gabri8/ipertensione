@@ -19,21 +19,21 @@ class InserisciDatiGiornalieri(tk.Frame):
 
             fp = Frame(self)
             fp.pack()
-            Label(fp, text=f"Misurazione numero 1" ,foreground="black", font=controller.font).grid(row=1,column=0)
+            Label(fp, text=f"Misurazione numero 1" ,foreground="black", font=controller.font).grid(row=1,column=0, pady=3)
 
             Label(fp, text="Pmin" ,foreground="black", font=controller.font).grid(row=0,column=1)
             pmin_entry = ttk.Entry(fp, textvariable=pmin[0], width=30, font=controller.font) #così psw è nascosta
-            pmin_entry.grid(row=1,column=1, padx=10)
+            pmin_entry.grid(row=1,column=1, padx=10, pady=3)
             pmin_entry.focus()
 
             Label(fp, text="Pmax" ,foreground="black", font=controller.font).grid(row=0,column=2)
             pmax_entry = ttk.Entry(fp, textvariable=pmax[0], width=30, font=controller.font) #così psw è nascosta
-            pmax_entry.grid(row=1,column=2, padx=10)
+            pmax_entry.grid(row=1,column=2, padx=10, pady=3)
 
             Label(fp, text="Ora" ,foreground="black", font=controller.font).grid(row=0,column=3)
             cb = ttk.Combobox(fp, textvariable=ore_pressioni[0], width=30, font=controller.font)
             cb["values"] =['00:00','00:30','01:00','01:30','02:00','02:30','03:00','03:30','04:00','04:30','05:00','05:30','06:30','07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30','23:00','23:30']
-            cb.grid(row=1,column=3, padx=10)
+            cb.grid(row=1,column=3, padx=10, pady=3)
             cb["state"] = "readonly"
 
             widget = [] # contiene gli oggetti widget
@@ -48,15 +48,15 @@ class InserisciDatiGiornalieri(tk.Frame):
                     riga=self.c
                     
                     l = Label(fp, text=f"Misurazione numero {riga}" ,foreground="black", font=controller.font)
-                    l.grid(row=riga,column=0, padx=10, pady=10)
+                    l.grid(row=riga,column=0, padx=10, pady=3)
                     widget.append(l)
                     
                     pmin_entry = ttk.Entry(fp, textvariable=pmin[self.c-1], width=30, font=controller.font) #così psw è nascosta
-                    pmin_entry.grid(row=riga,column=1, padx=10, pady=10)
+                    pmin_entry.grid(row=riga,column=1, padx=10, pady=3)
                     widget.append(pmin_entry)
 
                     pmax_entry = ttk.Entry(fp, textvariable=pmax[self.c-1], width=30, font=controller.font) #così psw è nascosta
-                    pmax_entry.grid(row=riga,column=2, padx=10, pady=10)
+                    pmax_entry.grid(row=riga,column=2, padx=10, pady=3)
                     widget.append(pmax_entry)
 
                     # ora_entry = Entry(fp, textvariable=ora[self.c-1]) #così psw è nascosta
@@ -88,9 +88,9 @@ class InserisciDatiGiornalieri(tk.Frame):
 
 
             ttk.Button(fp, text="+", command=addP, style='Custom.TButton', width=5).grid(row=0, column=4, pady=10)
-            ttk.Button(fp, text="-", command=remP, style='Custom.TButton', width=5).grid(row=1, column=4, pady=10)
+            ttk.Button(fp, text="-", command=remP, style='Custom.TButton', width=5).grid(row=1, column=4, pady=4)
 
-            Label(self, text="Hai assunto le seguenti farmaci, relative alle tue terapie?" ,foreground="black", font=controller.font).pack(pady=10)
+            Label(self, text="Hai seguito le seguenti assunzioni di farmaci, relativi alle tue terapie?" ,foreground="black", font=controller.font).pack(pady=10)
 
             terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz=%s", (utente.get_ID(),)) 
             #print(terapie)

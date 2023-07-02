@@ -18,8 +18,9 @@ class DatiPersonali(tk.Frame):
         self.controller = controller
 
         if(utente != None): #ovverro non sto solo inzializadno la pagina per il dizionario
-            terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz = %s AND (tipo='preg' OR tipo='conc' OR tipo='iper') ORDER BY tipo", (utente.get_ID(),))
-            patologie = controller.DB.my_query("SELECT * FROM occ_patologia WHERE id_paz = %s AND (tipo='conc' OR tipo='preg')", (utente.get_ID(),))
+            #terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz = %s AND (tipo='preg' OR tipo='conc' OR tipo='iper') ORDER BY tipo", (utente.get_ID(),))
+            terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz = %s ORDER BY tipo", (utente.get_ID(),))
+            patologie = controller.DB.my_query("SELECT * FROM occ_patologia WHERE id_paz = %s", (utente.get_ID(),))
 
             
 ##################### TABELLA TERAPIE #####################
@@ -51,6 +52,7 @@ class DatiPersonali(tk.Frame):
                 t = ""
                 if(record[6] == "preg"): t="Pregressa"
                 elif(record[6] == "conc"): t = "Concomitante"
+                elif(record[6] == "segn_ter_conc"): t = "Segnalata"
                 else: t="Ipertensiva"
                 ind = record[5]
                 if(record[5] == "" or record[5] == None or re.match(r'^[ \n\t]*$', record[5]) is not None): ind = "Nessuna indicazione specificata"
@@ -94,6 +96,7 @@ class DatiPersonali(tk.Frame):
                 t = ""
                 if(record[3] == "preg"): t="Pregressa"
                 elif(record[3] == "conc"): t = "Concomitante"
+                elif(record[3] == "segn_pat_conc"): t = "Segnalata"
                 fine = record[4]
                 if (fine  is None): fine = "Non terminata"
                 tabella_pat.insert('', END, values=[record[0], t, record[2], fine])
@@ -106,7 +109,7 @@ class DatiPersonali(tk.Frame):
             # tabella_sin.configure(yscrollcommand=s1.set)
         
         ####### BOTTONI PER VISULIZZARE PRESSIONI #####
-            f3 = LabelFrame(self, text='Visualiza pressioni', font=controller.font)
+            f3 = LabelFrame(self, text='Visualizza pressioni', font=controller.font)
             f3.pack(fill=BOTH, expand=True, padx=10)
 
             def vis_sett(tipoP):

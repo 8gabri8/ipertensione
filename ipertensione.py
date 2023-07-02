@@ -99,7 +99,7 @@ class App(tk.Tk):
                     self.show_frame("HomePaz", parent, paz) 
                 else:
                     # inserimeto della password errata 
-                    messagebox.showinfo(message="Passord errata!")
+                    messagebox.showinfo(message="Password errata!")
                     #DEVO CANCELLARE QUESTA FINETRACHE NON USO PIù?????
             else:
                 # l'utente ha inserito un utente inesistente
@@ -1045,6 +1045,9 @@ class App(tk.Tk):
         cal_fine = Calendar(frame, date_pattern='yyyy-mm-dd') # Change the date pattern here
         cal_fine.grid(row=8, columnspan=2)
 
+        Label(frame, text="Attenzione: se una terapia viene resa pregressa,\nle eventuali modifiche saranno ignorate.\n Prima modifica la terapia e poi rendila pregressa.").grid(row=9, columnspan=2, pady=3)
+
+
         def mod_ter_iper():
             #CONTROLLI PER MODFICA:
                 #SE CAMBIO NOME TER, NON CI DEVE ESSERE ALTRA TER IN CORSO CON STESSO NOME
@@ -1300,6 +1303,9 @@ class App(tk.Tk):
             date_format = "%Y-%m-%d"
             cal_fine = Calendar(frame, date_pattern='yyyy-mm-dd') # Change the date pattern here
             cal_fine.grid(row=8, columnspan=2)
+
+            Label(frame, text="Attenzione: se una terapia viene resa pregressa,\nle eventuali modifiche saranno ignorate.\n Prima modifica la terapia e poi rendila pregressa.").grid(row=9, columnspan=2, pady=3)
+
 
             def mod_ter_conc():
                 #creazione oggetto ter

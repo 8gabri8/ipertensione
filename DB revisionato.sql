@@ -323,7 +323,7 @@ create table segnalazione (
 	cod serial primary key,
     data date,
 	id_paz varchar(7) references utente(id),
-	tipo varchar(10), --no_segue, p_anomala
+	tipo varchar(10), --no_segue, p_anomala, segn_ter_conc, segn_pat_conc
 	gravita text
 );
 

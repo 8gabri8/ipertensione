@@ -194,8 +194,10 @@ class VisPaz(tk.Frame):
 
             # aggiungo i record che mi ritornano dalla query
             for record in datiP:
-                #if(record[3] == "p_anomala" or record[3] == "no_segue"):
-                tabella_segn.insert('', END, values=record)
+                t = ""
+                if(record[3] == "p_anomala"): t = "Pressione anomala"
+                elif(record[3] == "no_segue"): t = "Non segue Terapia"
+                tabella_segn.insert('', END, values=[record[0], record[1], record[2], t, record[4]])
 
             frame2.grid_columnconfigure(0, weight=1)
             tabella_segn.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
@@ -213,10 +215,10 @@ class VisPaz(tk.Frame):
                 frame = LabelFrame(top, text="Segnalazione")
                 frame.pack(fill="both", expand=True, padx=10, pady=10)                
 
-                if(tipo == "p_anomala"):
+                if(tipo == "Pressione anomala"):
                     Label(frame, text="Il giorno {}, il paziente {} ha avuto valori di pressioni anomali, con gravità: {}".format(
                                         values[1], values[2], values[4] )).grid(row=0, columnspan=2)
-                if(tipo == "no_segue"):
+                if(tipo == "Non segue Terapia"):
                     Label(frame, text="In data {}, il paziente {} non ha seguito la terapia per più di tre giorni.".format(values[1], values[2])).grid(row=0, columnspan=2)
                 # Center the Toplevel widget on the screen
                 top.update_idletasks()

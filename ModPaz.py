@@ -160,7 +160,7 @@ class ModPaz(tk.Frame):
                 frame.pack(fill="both", expand=True, padx=10, pady=10)
 
                 if(values[2] == "Segnalata"):
-                    Label(frame, text=f"Il paziente ha segnalato la seguente patologia concomitante, vuoi accettrala?\nPatologia: {values[0]}\n Inizio: {values[1]}").grid(row=0, columnspan=2, sticky="e")
+                    Label(frame, text=f"Il paziente ha segnalato la seguente patologia concomitante, vuoi accettarla?\nPatologia: {values[0]}\n Inizio: {values[1]}").grid(row=0, columnspan=2, sticky="e")
                        
                     ttk.Button(frame, text="Accetta", command=lambda: controller.accetta_pat_conc(utente, values[0], values[1], top, parent)).grid(row=1, column=0, pady=10)
                     
@@ -189,6 +189,8 @@ class ModPaz(tk.Frame):
                     Label(frame, text="Data Fine:").grid(row=2, column=0, sticky="w", padx=10, pady=10)
                     cal_fine = Calendar(frame, date_pattern='yyyy-mm-dd') # Change the date pattern here
                     cal_fine.grid(row=2, column=1, sticky="w", padx=10, pady=10)
+
+                    Label(frame, text="Attenzione: se una patologia viene resa pregressa,\nle eventuali modifiche saranno ignorate.\n Prima modifica la potologia e poi rendila pregressa.").grid(row=3, columnspan=2, sticky="e")
                     
                     # Create a button to close the Toplevel widget
                     ttk.Button(frame, text="Modifica", command=lambda: controller.modifica_pat_conc(utente, datetime.strptime(cal_inizio.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d'),

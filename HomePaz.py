@@ -12,7 +12,7 @@ class HomePaz(tk.Frame):
 
         if(utente != None): #ovverro non sto solo inzializadno la pagina per il dizionario
             dati = controller.DB.my_query("SELECT Nome, Cognome, Mail FROM utente WHERE id = %s", (utente.get_id_med_ref(),))
-            label = tk.Label(self, text=f"Medico di Riferimento: {dati[0][0]} {dati[0][1]}\n Contattalo alla mail: {dati[0][2]}", font=controller.title_font, foreground="black")
+            label = tk.Label(self, text=f"Buongiorno, {utente.get_nome()} {utente.get_cognome()}\nMedico di Riferimento: {dati[0][0]} {dati[0][1]}\n Contattalo alla mail: {dati[0][2]}", font=controller.title_font, foreground="black")
             label.pack(side="top", fill="x", pady=10)
 
 ################## MISRUAZIONE DI PRESSIONI #####################

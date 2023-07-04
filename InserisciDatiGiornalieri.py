@@ -92,7 +92,7 @@ class InserisciDatiGiornalieri(tk.Frame):
 
             Label(self, text="Hai seguito le seguenti assunzioni di farmaci, relativi alle tue terapie?" ,foreground="black", font=controller.font).pack(pady=10)
 
-            terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz=%s", (utente.get_ID(),)) 
+            terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz=%s AND tipo='iper'", (utente.get_ID(),)) 
             #print(terapie)
             #a(farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
 
@@ -106,13 +106,13 @@ class InserisciDatiGiornalieri(tk.Frame):
                 
                 for terapia in terapie: #predno una tupla della rispostya del DB, che sorripodne a un a singola terapia
                     if(terapia[6] == "iper"):
-                        for dose in range(terapia[4]): #ripeto la singola terpaia tamnte volte qunte sono le NDOSI
-                            assunzioni.append(f"{terapia[3]} di {terapia[0]}, dose {dose+1} ") #dose deve aprtier da 1!!!
-                            cluster_dosi.append(dose+1)
-                            cluster_farmaco.append(f"{terapia[0]}")
-                            cluster_inizio_ter.append(f"{terapia[2]}")
-
-                    
+                        print(terapia[2], datetime.now().date())
+                        if(terapia[2] <= datetime.now().date()): #SOLO LE TERAPIE INIZATE PRIMA DI OGGI SONO MOSTRATE
+                            for dose in range(terapia[4]): #ripeto la singola terpaia tamnte volte qunte sono le NDOSI
+                                assunzioni.append(f"{terapia[3]} di {terapia[0]}, dose {dose+1} ") #dose deve aprtier da 1!!!
+                                cluster_dosi.append(dose+1)
+                                cluster_farmaco.append(f"{terapia[0]}")
+                                cluster_inizio_ter.append(f"{terapia[2]}")
                 
                 for _ in range(len(assunzioni)): cluster_yn.append(StringVar())
                 
@@ -138,6 +138,9 @@ class InserisciDatiGiornalieri(tk.Frame):
                     cb.pack(side="left")
                     cb["state"] = "readonly"
                     #Entry(frame, textvariable=cluster_ora[i]).pack(side="left")
+
+            if(len(assunzioni) == 0):
+                    Label(self, text="Al momento, non segui nessuna terapia ipertensiva." ,foreground="black", font=controller.font).pack(pady=10)
 
 
             button = ttk.Button(self, text="Invia", style='Custom.TButton', width=20,

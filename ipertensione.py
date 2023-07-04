@@ -935,6 +935,10 @@ class App(tk.Tk):
             
             #controllo se stai già segiuendo altor
             terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE tipo = %s AND id_paz = %s", ("iper", utente.get_id_paz_selezionato()))
+            if(len(terapie_iper) ==3):
+                    messagebox.showinfo(message="Il paziente non può seguire più di tre terapie ipertensive contemporaneamente.")
+                    return
+            
             #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
             for terapia in terapie_iper:
                 if(nome_farmaco_new == terapia[0]):

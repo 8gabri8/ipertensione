@@ -1,22 +1,10 @@
 TODO
 + contrlalre package di ipertendsione
-+ prova 
-    repsonabile
-    paziente
-    stress test
 + cpaire riga strana di singleton
 + controllare sequnce diagram
 + constrllare class diagrams 
 
 + aggiungere scrollbar ad inseirmto dati giuoinalieri
-
-+ TEST SU UTENTI
-   PAZ IPERTESO
-   STUD MED
-
-
-- (DEPLOY)
-
 
 FORSE AGGIUNGERE NLE CODICE
 - non cancellare misurazioni di rpessioni se fifaccio dati giornata

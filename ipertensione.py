@@ -211,7 +211,7 @@ class App(tk.Tk):
             #prima controllo la data: NO dopo di oggi, NO prima di prima terapia ipetensivaterapie_ipre
             #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
             #NB PRENDEDK ANCHE LE PREG, SICNRSTRE LA PRIMA IMSERITA è IPERTEINSVA
-            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s AND tipo='iper' OR tipo='preg' ORDER BY inizio", (utente.get_ID(),))
+            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s AND (tipo='iper' OR tipo='preg') ORDER BY inizio", (utente.get_ID(),))
             #print(terapie_iper)
             #controllo che il paziente abbia alemno una ter iper
             #print(terapie_iper)

@@ -176,7 +176,7 @@ class App(tk.Tk):
         frame.pack(fill="both", expand=True, padx=10, pady=10)
 
         Label(frame, text="Nome patologia:").grid(row=0, column=0, sticky="e")
-        cb_pat = ttk.Combobox(frame)
+        cb_pat = ttk.Combobox(frame, width=30)
         pat = self.DB.my_query("SELECT Nome FROM Patologia", None)
         pat = [str(item[0]) for item in pat]
         cb_pat["values"] = pat
@@ -268,7 +268,6 @@ class App(tk.Tk):
 
         top.grab_set() # per bloccare la finestram pop up
         
-
     ################# aggiunta sintomo ####################################################
     def add_sintomo(self, utente, parent):
         # Create a new Toplevel widget
@@ -281,7 +280,7 @@ class App(tk.Tk):
 
         # Create Labels for each piece of information
         Label(frame, text="Sintomo:").grid(row=0, column=0, sticky="e")
-        cb_sintomo = ttk.Combobox(frame)
+        cb_sintomo = ttk.Combobox(frame, width=50)
         sintomi = self.DB.my_query("SELECT Nome FROM Sintomo", None)
         sintomi = [str(item[0]) for item in sintomi]
         cb_sintomo["values"] = sintomi

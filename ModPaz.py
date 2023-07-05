@@ -171,7 +171,7 @@ class ModPaz(tk.Frame):
                     # Create Labels for each piece of information
                     Label(frame, text="Nome Patologia:").grid(row=0, column=0, sticky="w", padx=10)
                     #Label(frame, text=values[0]).grid(row=0, column=1, sticky="w")
-                    cb_pat = ttk.Combobox(frame)
+                    cb_pat = ttk.Combobox(frame, width=40)
                     pat = controller.DB.my_query("SELECT Nome FROM Patologia", None)
                     pat = [str(item[0]) for item in pat]
                     cb_pat["values"] = pat

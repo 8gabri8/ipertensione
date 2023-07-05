@@ -92,7 +92,7 @@ class InserisciDatiGiornalieri(tk.Frame):
 
             Label(self, text="Hai seguito le seguenti assunzioni di farmaci, relativi alle tue terapie?" ,foreground="black", font=controller.font).pack(pady=10)
 
-            terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz=%s AND tipo='iper'", (utente.get_ID(),)) 
+            terapie = controller.DB.my_query("SELECT * FROM terapia WHERE id_paz=%s AND tipo='iper' AND inizio <= %s", (utente.get_ID(), datetime.now().date().strftime("%Y-%m-%d"))) 
             #print(terapie)
             #a(farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
 

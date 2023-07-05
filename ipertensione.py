@@ -18,6 +18,9 @@ class App(tk.Tk):
         self.DB = ManagerDB()
         self.factory = UtenteFactory()
 
+        # self.DB2 = ManagerDB()
+        # print(self.DB is self.DB2)
+
         self.title("App Ipertensione")
         self.resizable(False, False)
 
@@ -207,42 +210,49 @@ class App(tk.Tk):
 
             #prima controllo la data: NO dopo di oggi, NO prima di prima terapia ipetensivaterapie_ipre
             #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
-            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s ORDER BY inizio", (utente.get_ID(),))
+            #NB PRENDEDK ANCHE LE PREG, SICNRSTRE LA PRIMA IMSERITA è IPERTEINSVA
+            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s AND tipo='iper' OR tipo='preg' ORDER BY inizio", (utente.get_ID(),))
             #print(terapie_iper)
             #controllo che il paziente abbia alemno una ter iper
+            #print(terapie_iper)
             if(terapie_iper == []):
-                messagebox.showinfo(message="Non puoi avere una patologia concomitante se non ha iniziato ancora una terapia ipertensiva")
+                messagebox.showinfo(message="Non puoi avere una patologia concomitante se non hai iniziato ancora una terapia ipertensiva")
                 return
             
             #controllo che pa non abbia messo data del sintomo dopo di oggi, o prima di prima ter iper
-            data_patologia_conc_dt = data_pat_conc
+            data_patologia_conc_dt = data_pat_conc #data da calendario
             data_prima_terapia_iper_dt =  datetime.strptime(terapie_iper[0][2].strftime('%Y-%m-%d'), '%Y-%m-%d')
             data_oggi_dt = datetime.today()
 
-            #print(data_oggi_dt, data_patologia_conc_dt, data_prima_terapia_iper_dt)
-
-            pat_preg = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_ID(), nome_pat))
-            if(len(pat_preg) != 0):
-                for ter_preg in pat_preg:
-                    start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    if(data_patologia_conc_dt <= end_dt and data_patologia_conc_dt >= start_dt):
-                        messagebox.showinfo(message="In quel periodo stavi già soffrendo di questa patologia.")
-                        return
-
-                    #non deve esistere una terapia conc con uguale
-            pat_conc = self.DB.my_query("SELECT * FROM occ_patologia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s", ("conc", "segn_pat_conc", utente.get_ID()))
-            #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
-            for pat in pat_conc:
-                if(nome_pat == pat[0]):
-                    messagebox.showinfo(message="Stai già soffrendo o hai già segnalato questa patologia")
-                    return
             if(data_patologia_conc_dt < data_prima_terapia_iper_dt): #devo controllare che la data non sia qu
-                messagebox.showinfo(message="Non puoi avere uina patologia concomitante prima di aver seguito una terampia ipertensiva")
+                messagebox.showinfo(message="Non puoi avere una patologia concomitante prima di aver seguito una terapia ipertensiva")
                 return
             if(data_patologia_conc_dt > data_oggi_dt):
                 messagebox.showinfo(message="Non puoi saper che patologia avrai nel futuro")
                 return
+
+            pat_conc = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and (tipo='conc' OR tipo='segn_pat_conc') and nome_pat = %s", (utente.get_ID(), nome_pat))
+            if(len(pat_conc) != 0):
+                messagebox.showinfo(message="Stai già soffrendo o hai già segnalato questa patologia")
+                return
+
+            #print(data_oggi_dt, data_patologia_conc_dt, data_prima_terapia_iper_dt)
+
+            pat_preg = self.DB.my_query("SELECT fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s ORDER BY fine DESC", (utente.get_ID(), nome_pat))
+            if(len(pat_preg) != 0):
+                data_fine_ultima_pat_conc = datetime.strptime(pat_preg[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                if(data_patologia_conc_dt <= data_fine_ultima_pat_conc):
+                        messagebox.showinfo(message="In quel periodo stavi già soffrendo di questa patologia.")
+                        return
+
+            #         #non deve esistere una terapia conc con uguale
+            # pat_conc = self.DB.my_query("SELECT * FROM occ_patologia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s", ("conc", "segn_pat_conc", utente.get_ID()))
+            # #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
+            # for pat in pat_conc:
+            #     date_inizio_pat = datetime.strptime(pat[2].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            #     if(nome_pat == pat[0] and data_patologia_conc_dt >= date_inizio_pat):
+            #         messagebox.showinfo(message="Stai già soffrendo o hai già segnalato questa patologia")
+            #         return
             
             #creo ogetto segn_pat
             segn_pat = SegnPatConc.create_patologia(nome_pat, utente.get_ID(), data_pat_conc, )
@@ -409,36 +419,40 @@ class App(tk.Tk):
 
         def modDB():
             #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
-            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s ORDER BY inizio", (utente.get_ID(),))
+            terapie_iper = self.DB.my_query("SELECT inizio FROM Terapia WHERE id_paz=%s AND (tipo='iper' OR tipo='preg') ORDER BY inizio", (utente.get_ID(),))
             #controllo che il paziente abbia alemno una ter iper
             if(terapie_iper == []):
-                messagebox.showinfo(message="Non puoi avere un terapia concomitante se non ha iniziato ancora una terapia ipertensiva")
+                messagebox.showinfo(message="Non puoi avere un terapia concomitante se non hai iniziato ancora una terapia ipertensiva")
                 return
 
             #predno la data della prima ter iper
-            terapie_iper = self.DB.my_query("SELECT inizio FROM Terapia WHERE id_paz = %s ORDER BY inizio", (utente.get_ID(),))
             data_prima_terapia_dt =  datetime.strptime(terapie_iper[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
             data_inizio_terapia_dt = datetime.strptime(cal.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
 
-            terapie_preg = self.DB.my_query("SELECT inizio, fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s", (utente.get_ID(), cb_ter.get()))
+            if(data_inizio_terapia_dt < data_prima_terapia_dt): #devo controllare che la data non sia priima della prima ter iper
+                messagebox.showinfo(message="Non puoi seguire una terapia concomitante prima di aver seguito una terapia ipertensiva")
+                return
+
+            terapie_preg = self.DB.my_query("SELECT fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s ORDER BY fine DESC", (utente.get_ID(), cb_ter.get()))
             if(len(terapie_preg) != 0):
-                for ter_preg in terapie_preg:
-                    start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    if(data_inizio_terapia_dt <= end_dt and data_inizio_terapia_dt >= start_dt):
-                        messagebox.showinfo(message="In quel periodo stavi già seguendo questa terapia")
-                        return
+                data_fine_ultima_ter_preg = datetime.strptime(terapie_preg[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                if(data_inizio_terapia_dt <= data_fine_ultima_ter_preg):
+                    messagebox.showinfo(message="In quel periodo stavi già assumendo quella terapia.")
+                    return
+            # if(len(terapie_preg) != 0):
+            #     for ter_preg in terapie_preg:
+            #         start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            #         end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            #         if(data_inizio_terapia_dt <= end_dt and data_inizio_terapia_dt >= start_dt):
+            #             messagebox.showinfo(message="In quel periodo stavi già seguendo questa terapia")
+            #             return
             
             #non deve esistere una terapia conc con uguale
-            terapie_conc = self.DB.my_query("SELECT * FROM Terapia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s", ("conc", "segn_ter_conc", utente.get_ID()))
-            #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
-            for terapia in terapie_conc:
-                if(cb_ter.get() == terapia[0]):
-                    messagebox.showinfo(message="Stai già seguendo o hai già segnalato questa terapia")
-                    return
-            if(data_inizio_terapia_dt < data_prima_terapia_dt): #devo controllare che la data non sia qu
-                messagebox.showinfo(message="Non puoi seguire una terapia concomitante prima di aver seguito una terampia ipertensiva")
+            terapie_conc = self.DB.my_query("SELECT * FROM Terapia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s AND nome_farm=%s", ("conc", "segn_ter_conc", utente.get_ID(), cb_ter.get()))
+            if(terapie_conc != []):
+                messagebox.showinfo(message="Stai già seguendo o hai già segnalato questa terapia")
                 return
+            
 
             ter = Terapia.create_terapia(
                             cb_ter.get(),
@@ -801,6 +815,7 @@ class App(tk.Tk):
       
     ####### PRESSIONE SETTIMANALE ###################
     def get_pressioni_sett(self, id_paz, tipoP, parent):
+        logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
 
         #SE PER SETT, DEVO PREDNERE SOLO ULTIMI SETTE GIORNI
         # sevenAgo = datetime.now() - timedelta(days=7) #sttenzione qui c'è anche orario
@@ -844,6 +859,8 @@ class App(tk.Tk):
 
     ###### PRESSIONE MENSILE ###################
     def get_pressioni_mese(self, id_paz, anno, mese, parent):
+        logging.getLogger("PIL.PngImagePlugin").setLevel(logging.WARNING)
+
         
         def last_day_of_month(year, month): #ritona lìltimo girono del mese
             return 31 - (month == 2 and (not year % 4 and year % 100 or not year % 400) or month in {4, 6, 9, 11})
@@ -919,35 +936,30 @@ class App(tk.Tk):
                 #SI PUò ESSERE DATA INZIO DOPO OGGI --> ok
                 #NON POSSO IMMETERE LA TSESSA IN CORSO --> ok
             
-            data_inizio_terapia_new_dt = datetime.strptime(cal_inizio.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
-            nome_farmaco_new = cb_farmaco.get()
+            data_inizio_terapia_dt = datetime.strptime(cal_inizio.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
 
-           #controllo range
-            terapie_preg = self.DB.my_query("SELECT inizio, fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s", (utente.get_id_paz_selezionato(), nome_farmaco_new))
-            if(len(terapie_preg) != 0):
-                for ter_preg in terapie_preg:
-                    start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    if(data_inizio_terapia_new_dt <= end_dt and data_inizio_terapia_new_dt >= start_dt):
-                        messagebox.showinfo(message="In quel periodo stavi già seguendo questa terapia")
-                        return
-            
-            #controllo se stai già segiuendo altor
-            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE tipo = %s AND id_paz = %s", ("iper", utente.get_id_paz_selezionato()))
-            if(len(terapie_iper) ==3):
-                    messagebox.showinfo(message="Il paziente non può seguire più di tre terapie ipertensive contemporaneamente.")
-                    return
-            
-            #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
-            for terapia in terapie_iper:
-                if(nome_farmaco_new == terapia[0]):
-                    messagebox.showinfo(message="Il paziente sta già seguendo questa terapia")
-                    return
-            
             #controllo che la data terapia non deve essere minotre della dataN paz
             dataN = self.DB.my_query("select dataN from utente where id = %s", (utente.get_id_paz_selezionato(),))
-            if(data_inizio_terapia_new_dt.date() < dataN[0][0]):
+            if(data_inizio_terapia_dt.date() < dataN[0][0]):
                 messagebox.showinfo(message="La terapia non può iniziare prima della data di nascita del paziente! Il paziente è nato: {}".format(dataN[0][0].strftime("%Y-%m-%d")))
+                return
+
+           #controllo range
+            terapie_preg = self.DB.my_query("SELECT fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s ORDER BY fine DESC", (utente.get_id_paz_selezionato(), cb_farmaco.get()))
+            if(len(terapie_preg) != 0):
+                data_fine_ultima_ter_iper_pregressa = datetime.strptime(terapie_preg[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                if(data_inizio_terapia_dt <= data_fine_ultima_ter_iper_pregressa):
+                    messagebox.showinfo(message="In quel periodo il paziente stava già seguendo questa terapia")
+                    return
+            
+            #controllo se stai già segiuendo altor
+            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE tipo = 'iper' AND id_paz = %s AND nome_farm = %s", (utente.get_id_paz_selezionato(), cb_farmaco.get()))
+            n = 3
+            if(len(terapie_iper) == n):
+                messagebox.showinfo(message=f"Il paziente non può seguire più di {n} terapie ipertensive contemporaneamente.")
+                return     
+            if(terapie_iper != []):
+                messagebox.showinfo(message="Il paziente sta già seguendo questa terapia")
                 return
 
             ter = Terapia.create_terapia(
@@ -1059,41 +1071,39 @@ class App(tk.Tk):
                 # INZIO MAGGIOR DI DATAN
                 # INIZIO NON IN RNAGE DI PREG
                 # DATA INZIO NEW >= DATA INZIO OLD --> PAZ POTRBBE AVER GIà RPESO DEI FARMACI
-                    #CADCADE MODIFICA INZIO TER IN TABELLA ASSUNZIONE
-            
+                    #CADCADE MODIFICA INZIO TER IN TABELLA ASSUNZION
+
+
             data_inizio_terapia_new_dt = datetime.strptime(cal_inizio.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
             data_inizio_terapia_old_dt = initial_date
             nome_farmaco_new = cb_farmaco.get()
             nome_farmaco_old = values[0]
 
-           #controllo range
-            terapie_preg = self.DB.my_query("SELECT inizio, fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s", (utente.get_id_paz_selezionato(), nome_farmaco_new))
-            if(len(terapie_preg) != 0):
-                for ter_preg in terapie_preg:
-                    start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    if(data_inizio_terapia_new_dt <= end_dt and data_inizio_terapia_new_dt >= start_dt):
-                        messagebox.showinfo(message="In quel periodo stavi già seguendo questa terapia")
-                        return
-            
-            #controllo se stai già segiuendo altor
-            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE tipo = %s AND id_paz = %s", ("iper", utente.get_id_paz_selezionato()))
-            #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
-            for terapia in terapie_iper:
-                if(nome_farmaco_new == terapia[0]  and nome_farmaco_new != nome_farmaco_old):
-                    messagebox.showinfo(message="Il paziente sta già seguendo questa terapia")
-                    return
-            
-            #controllo che la terapia non deve essere minotre della patologia
+            #controllo che la data terapia non deve essere minotre della dataN paz
             dataN = self.DB.my_query("select dataN from utente where id = %s", (utente.get_id_paz_selezionato(),))
             if(data_inizio_terapia_new_dt.date() < dataN[0][0]):
                 messagebox.showinfo(message="La terapia non può iniziare prima della data di nascita del paziente! Il paziente è nato: {}".format(dataN[0][0].strftime("%Y-%m-%d")))
                 return
             
-            ass = self.DB.my_query("select * from assunzione where id_paz = %s and nome_farm = %s and inizio_ter=%s", (utente.get_id_paz_selezionato(),
-                                                                                                                    nome_farmaco_old, 
-                                                                                                                    data_inizio_terapia_old_dt.strftime("%Y-%m-%d")))
-            if(data_inizio_terapia_new_dt.date() > data_inizio_terapia_old_dt and len(ass) != 0):
+            #controllo range
+            terapie_preg = self.DB.my_query("SELECT fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s ORDER BY fine DESC", (utente.get_id_paz_selezionato(), nome_farmaco_new))
+            if(len(terapie_preg) != 0):
+                data_fine_ultima_ter_iper_pregressa = datetime.strptime(terapie_preg[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                if(data_inizio_terapia_new_dt <= data_fine_ultima_ter_iper_pregressa):
+                    messagebox.showinfo(message="In quel periodo il paziente stava già seguendo questa terapia")
+                    return
+
+            terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE tipo = 'iper' AND id_paz = %s AND nome_farm = %s AND inizio <> %s", (utente.get_id_paz_selezionato(), cb_farmaco.get(), data_inizio_terapia_old_dt))     
+            if(terapie_iper != []):
+                messagebox.showinfo(message="Il paziente sta già seguendo questa terapia")
+                return
+            
+            ass = self.DB.my_query("select * from assunzione where id_paz = %s and nome_farm = %s and inizio_ter=%s AND giorno <= %s", (utente.get_id_paz_selezionato(),
+                                                                                                                                        nome_farmaco_old, 
+                                                                                                                                        data_inizio_terapia_old_dt.strftime("%Y-%m-%d"),
+                                                                                                                                        data_inizio_terapia_new_dt.strftime("%Y-%m-%d")))
+            print(ass)
+            if((data_inizio_terapia_new_dt.date() > data_inizio_terapia_old_dt) and len(ass) != 0):
                 messagebox.showinfo(message="Il paziente ha già assunto questa terapia, quindi la sua data di inizio non può essere posticipata.")
                 return
             
@@ -1138,21 +1148,25 @@ class App(tk.Tk):
             
             data_fine_ter_iper_dt = cal_fine.selection_get() #ritona datetimew
             data_inizio_ter_iper_dt = datetime.strptime(values[1], "%Y-%m-%d")
+            oggi = datetime.now()
 
-            ter_pregS = self.DB.my_query("SELECT inizio, fine FROM terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s", (utente.get_id_paz_selezionato(), values[0]))
-            if(len(ter_pregS) != 0):
-                for ter_preg in ter_pregS:
-                    start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                    if(data_fine_ter_iper_dt <= end_dt.date() and data_fine_ter_iper_dt >= start_dt.date()): #range
-                        messagebox.showinfo(message="In quel periodo stava già soffrendo di questa patologia.")
-                        return
-                    elif(data_inizio_ter_iper_dt.date() <= start_dt.date() and data_fine_ter_iper_dt >= end_dt.date()): #scoreppoazione
-                        messagebox.showinfo(message="C'è uan sovrapposzione temporale della stessa patologia.")
-                        return
+            # ter_pregS = self.DB.my_query("SELECT inizio, fine FROM terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s", (utente.get_id_paz_selezionato(), values[0]))
+            # if(len(ter_pregS) != 0):
+            #     for ter_preg in ter_pregS:
+            #         start_dt =  datetime.strptime(ter_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            #         end_dt =  datetime.strptime(ter_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            #         if(data_fine_ter_iper_dt <= end_dt.date() and data_fine_ter_iper_dt >= start_dt.date()): #range
+            #             messagebox.showinfo(message="In quel periodo stava già soffrendo di questa patologia.")
+            #             return
+            #         elif(data_inizio_ter_iper_dt.date() <= start_dt.date() and data_fine_ter_iper_dt >= end_dt.date()): #scoreppoazione
+            #             messagebox.showinfo(message="C'è uan sovrapposzione temporale della stessa patologia.")
+            #             return
 
             if (data_fine_ter_iper_dt < data_inizio_ter_iper_dt.date()):
                 messagebox.showinfo(message="La patologia non può finire prima di iniziare!")
+                return   
+            if (oggi.date() < data_fine_ter_iper_dt):
+                messagebox.showinfo(message="Non puoi inserire una data di fine dopo di oggi, infatti impediresti al paziente di segnalare le assunzioni di questo farmaco.")
                 return   
 
             #creazione oggetto ter
@@ -1274,6 +1288,13 @@ class App(tk.Tk):
         else: # è GIà ACCETTATA
             Label(frame, text="Farmaco:").grid(row=0, column=0, sticky="e")
             Label(frame, text=values[0]).grid(row=0, column=1, sticky="w")
+            ter = self.DB.my_query("SELECT Nome FROM Farmaco WHERE tipo='altro'", None)
+            ter = [str(item[0]) for item in ter]
+            cb_ter = ttk.Combobox(frame)
+            cb_ter["values"] = ter
+            cb_ter.grid(row=0,column=1, sticky="w")
+            cb_ter["state"] = "readonly"
+            cb_ter.set(values[0])
             
             Label(frame, text="Quantità per dose:").grid(row=1, column=0, sticky="e")
             #Label(frame, text=values[1]).grid(row=1, column=1, sticky="w")
@@ -1293,7 +1314,7 @@ class App(tk.Tk):
             cal_inizio = Calendar(frame, selectmode='day', date_pattern='yyyy-mm-dd', year=initial_date.year,
                                     month=initial_date.month, day=initial_date.day) # Change the date pattern here
             cal_inizio.grid(row=4, columnspan=2)
-            cal_inizio.configure(state="disabled")
+            #cal_inizio.configure(state="disabled")
             
             Label(frame, text="Indicazioni:").grid(row=5, columnspan=2)
             # = Entry(frame, text=values[3]).grid(row=3, column=1, sticky="w")_
@@ -1311,10 +1332,39 @@ class App(tk.Tk):
 
 
             def mod_ter_conc():
+                # controlli
+                #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
+                terapie_iper = self.DB.my_query("SELECT inizio FROM Terapia WHERE id_paz=%s AND (tipo='iper' OR tipo='preg') ORDER BY inizio", (utente.get_id_paz_selezionato(),))
+                #mai eseguiot, infati controllo è nella segnazlaione dle poaznuiete
+                if(terapie_iper == []):
+                    messagebox.showinfo(message="Il paziente non può avere un terapia concomitante se non hai iniziato ancora una terapia ipertensiva")
+                    return
+
+                #predno la data della prima ter iper
+                data_prima_terapia_dt =  datetime.strptime(terapie_iper[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                data_inizio_terapia_new_dt = datetime.strptime(cal_inizio.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
+
+                if(data_inizio_terapia_new_dt < data_prima_terapia_dt): #devo controllare che la data non sia priima della prima ter iper
+                    messagebox.showinfo(message="Il paziente non può seguire una terapia concomitante prima di aver seguito una terapia ipertensiva")
+                    return
+
+                terapie_preg = self.DB.my_query("SELECT fine FROM Terapia WHERE id_paz = %s and tipo='preg' and nome_farm = %s ORDER BY fine DESC", (utente.get_id_paz_selezionato(), cb_ter.get()))
+                if(len(terapie_preg) != 0):
+                    data_fine_ultima_ter_preg = datetime.strptime(terapie_preg[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+                    if(data_inizio_terapia_new_dt <= data_fine_ultima_ter_preg):
+                        messagebox.showinfo(message="In quel periodo il paziente stava già assumendo quella terapia.")
+                        return
+                
+                #non deve esistere una terapia conc con uguale
+                terapie_conc = self.DB.my_query("SELECT * FROM Terapia WHERE (tipo = %s OR tipo =%s) AND id_paz = %s AND nome_farm=%s", ("conc", "segn_ter_conc", utente.get_id_paz_selezionato(), cb_ter.get()))
+                if(terapie_conc != []):
+                    messagebox.showinfo(message="Il paziente sta già seguendo o hai già segnalato questa terapia")
+                    return      
+
                 #creazione oggetto ter
                 # farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine):
                 ter = Terapia.create_terapia(  
-                                values[0], 
+                                cb_ter.get(), 
                                 utente.get_id_paz_selezionato(), 
                                 cal_inizio.selection_get().strftime('%Y-%m-%d'),
                                 qtaxdose.get(), 
@@ -1339,6 +1389,14 @@ class App(tk.Tk):
                     self.show_frame("ShowTerapie", parent, utente)
 
             def conc2preg():
+                #controlli
+                data_fine_ter_dt = datetime.strptime(cal_fine.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
+                data_inizio_ter_dt =  datetime.strptime(values[1], '%Y-%m-%d') #eventuali altre nmodifiche non prese in codierazio solo data di fine
+                
+                if (data_fine_ter_dt < data_inizio_ter_dt):
+                    messagebox.showinfo(message="La terapia non può finire prima di iniziare!", parent=top)
+                    return 
+                
                 #creazione oggetto ter
                 ter = Terapia.create_terapia(  
                                 values[0], 
@@ -1350,15 +1408,6 @@ class App(tk.Tk):
                                 "preg", 
                                 cal_fine.selection_get().strftime('%Y-%m-%d'),)
 
-                #controllo: data fine deve essere maggiore di ddata inizio
-                data_fine_ter_dt = datetime.strptime(cal_fine.selection_get().strftime('%Y-%m-%d'), '%Y-%m-%d')
-                data_inizio_ter_dt =  datetime.strptime(values[1], '%Y-%m-%d')
-
-                if (data_fine_ter_dt < data_inizio_ter_dt):
-                    messagebox.showinfo(message="La terapia non può finire prima di iniziare!", parent=top)
-                    return       
-
-                # update
                 if(type(ter) == str):
                     messagebox.showinfo(message=ter, parent=top)
                     return
@@ -1422,9 +1471,10 @@ class App(tk.Tk):
 
         #prima controllo la data: NO dopo di oggi, NO prima di prima terapia ipetensivaterapie_ipre
         #NS INUTOLE SPECIFICATEE TIPO, PERCHè èPRIMA TER è SEMPRE IPER
-        terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s ORDER BY inizio", (utente.get_id_paz_selezionato(),))
+        terapie_iper = self.DB.my_query("SELECT * FROM Terapia WHERE id_paz=%s AND tipo='iper' OR tipo='preg' ORDER BY inizio", (utente.get_id_paz_selezionato(),))
 
         #controllo che il paziente abbia alemno una ter iper
+        #non si verificherà mail perchè il controllo è stato già fatto durnate la segnalazione
         if(terapie_iper == []):
             messagebox.showinfo(message="Non puoi avere una patologia concomitante se non ha iniziato ancora una terapia ipertensiva")
             return
@@ -1435,32 +1485,52 @@ class App(tk.Tk):
         data_prima_terapia_iper_dt =  datetime.strptime(terapie_iper[0][2].strftime('%Y-%m-%d'), '%Y-%m-%d')
         data_oggi_dt = datetime.today()
 
-        #print(data_oggi_dt, data_patologia_conc_dt, data_prima_terapia_iper_dt)
+        if(data_patologia_conc_new_dt < data_prima_terapia_iper_dt): #devo controllare che la data non sia qu
+            messagebox.showinfo(message=f"Il paziente non può avere una patologia concomitante prima di aver seguito una terapia ipertensiva.\nLa prima terapia ipertensiva risale al {data_prima_terapia_iper_dt.date()}")
+            return
+        if(data_patologia_conc_new_dt > data_oggi_dt):
+            messagebox.showinfo(message="Una patologia non può inziare prima di oggi")
+            return
+        pat_conc = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='conc' and nome_pat = %s AND inizio <> %s", (utente.get_id_paz_selezionato(), nome_pat_conc_new, data_inizio_pat_conc_old))
+        print(pat_conc)
+        if(len(pat_conc) != 0):
+            messagebox.showinfo(message="Il paziente ha già questa patologia concomitante.")
+            return
 
-        #paziente immette nuova nome di pat.
-        #controllo che data di inzio nmon sia in range di una apt conc PREG con stesso nome
-        pat_pregS = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_id_paz_selezionato(), nome_pat_conc_new))
-        if(len(pat_pregS) != 0):
-            for pat_preg in pat_pregS:
-                start_dt =  datetime.strptime(pat_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                end_dt =  datetime.strptime(pat_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                if(data_patologia_conc_new_dt <= end_dt and data_patologia_conc_new_dt>= start_dt):
+        pat_preg = self.DB.my_query("SELECT fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s ORDER BY fine DESC", (utente.get_id_paz_selezionato(), nome_pat_conc_new))
+        if(len(pat_preg) != 0):
+            data_fine_ultima_pat_conc_preg = datetime.strptime(pat_preg[0][0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+            if(data_patologia_conc_new_dt <= data_fine_ultima_pat_conc_preg):
                     messagebox.showinfo(message="In quel periodo stava già soffrendo di questa patologia.")
                     return
 
-        #non deve esistere una patologia conc con uguale
-        pat_conc = self.DB.my_query("SELECT * FROM occ_patologia WHERE tipo = %s AND id_paz = %s", ("conc", utente.get_id_paz_selezionato()))
-        #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
-        for pat in pat_conc:
-            if(nome_pat_conc_new == pat[0] and data_inizio_pat_conc_new >= data_inizio_pat_conc_old):
-                messagebox.showinfo(message="Il paziente sta già soffrendo di questa patologia")
-                return
-        if(data_patologia_conc_new_dt < data_prima_terapia_iper_dt): #devo controllare che la data non sia qu
-            messagebox.showinfo(message="Non puoi avere una patologia concomitante prima di aver seguito una terampia ipertensiva")
-            return
-        if(data_patologia_conc_new_dt > data_oggi_dt):
-            messagebox.showinfo(message="Non puoi saper che patologia avrà il paziente nel futuro")
-            return
+        # #print(data_oggi_dt, data_patologia_conc_dt, data_prima_terapia_iper_dt)
+
+        # #paziente immette nuova nome di pat.
+        # #controllo che data di inzio nmon sia in range di una apt conc PREG con stesso nome
+        # pat_pregS = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_id_paz_selezionato(), nome_pat_conc_new))
+        # if(len(pat_pregS) != 0):
+        #     for pat_preg in pat_pregS:
+        #         start_dt =  datetime.strptime(pat_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        #         end_dt =  datetime.strptime(pat_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        #         if(data_patologia_conc_new_dt <= end_dt and data_patologia_conc_new_dt>= start_dt):
+        #             messagebox.showinfo(message="In quel periodo stava già soffrendo di questa patologia.")
+        #             return
+
+        # #non deve esistere una patologia conc con uguale
+        # pat_conc = self.DB.my_query("SELECT * FROM occ_patologia WHERE tipo = %s AND id_paz = %s", ("conc", utente.get_id_paz_selezionato()))
+        # #farmaco, id_paz, inizio, qtaxdose, ndosi, ind, tipo, fine)
+        # for pat in pat_conc:
+        #     date_inizio_pat = datetime.strptime(pat[2].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        #     if(nome_pat_conc_new == pat[0] and data_inizio_pat_conc_new >= date_inizio_pat):
+        #         messagebox.showinfo(message="Il paziente sta già soffrendo di questa patologia")
+        #         return
+        # if(data_patologia_conc_new_dt < data_prima_terapia_iper_dt): #devo controllare che la data non sia qu
+        #     messagebox.showinfo(message="Non puoi avere una patologia concomitante prima di aver seguito una terapia ipertensiva")
+        #     return
+        # if(data_patologia_conc_new_dt > data_oggi_dt):
+        #     messagebox.showinfo(message="Non puoi sapere che patologia avrà il paziente nel futuro")
+        #     return
             
          #creo ogetto segn_pat
         pat_conc = PatConc.create_patologia(nome_pat_conc_new,
@@ -1486,24 +1556,35 @@ class App(tk.Tk):
         data_inizio_ter_conc_dt = data_inizio
         data_oggi_dt = datetime.today()
 
-        pat_pregS = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_id_paz_selezionato(), nome_pat))
-        if(len(pat_pregS) != 0):
-            for pat_preg in pat_pregS:
-                start_dt =  datetime.strptime(pat_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                end_dt =  datetime.strptime(pat_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
-                if(data_fine_ter_conc_dt  <= end_dt and data_fine_ter_conc_dt >= start_dt):
-                    messagebox.showinfo(message="In quel periodo stava già soffrendo di questa patologia.")
-                    return
-                elif(data_inizio_ter_conc_dt  <= start_dt and data_fine_ter_conc_dt >= end_dt):
-                    messagebox.showinfo(message="C'è uan sovrapposzione temporale della stessa patologia.")
-                    return
+        #print(data_fine_ter_conc_dt, data_inizio_ter_conc_dt)
 
         if (data_fine_ter_conc_dt < data_inizio_ter_conc_dt):
             messagebox.showinfo(message="La patologia non può finire prima di iniziare!", parent=popup)
             return  
-        elif(data_fine_ter_conc_dt > data_oggi_dt):
+        
+        if(data_fine_ter_conc_dt > data_oggi_dt):
             messagebox.showinfo(message="Noi puoi sapere quando finirà una patologia", parent=popup)
             return   
+
+        # pat_pregS = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='preg' and nome_pat = %s", (utente.get_id_paz_selezionato(), nome_pat))
+        # if(len(pat_pregS) != 0):
+        #     for pat_preg in pat_pregS:
+        #         start_dt =  datetime.strptime(pat_preg[0].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        #         end_dt =  datetime.strptime(pat_preg[1].strftime('%Y-%m-%d'), '%Y-%m-%d')
+        #         if(data_fine_ter_conc_dt  <= end_dt and data_fine_ter_conc_dt >= start_dt):
+        #             messagebox.showinfo(message="In quel periodo stava già soffrendo di questa patologia.")
+        #             return
+        #         elif(data_inizio_ter_conc_dt  <= start_dt and data_fine_ter_conc_dt >= end_dt):
+        #             messagebox.showinfo(message="C'è uan sovrapposzione temporale della stessa patologia.")
+        #             return
+        
+        # pat_concS = self.DB.my_query("SELECT inizio, fine FROM occ_patologia WHERE id_paz = %s and tipo='conc' and nome_pat = %s", (utente.get_id_paz_selezionato(), nome_pat))
+        # if(len(pat_concS) != 0):
+        #     for pat_conc in pat_concS:
+        #         start_dt =  datetime.strptime(pat_conc[0].strftime('%Y-%m-%d'), '%Y-%m-%d')                
+        #         if(data_fine_ter_conc_dt >= start_dt):
+        #             messagebox.showinfo(message="In quel periodo il paziente stava già soffrendo di questa patologia.")
+        #             return
         
         pat_preg = PatPreg.create_patologia(nome_pat, 
                                             utente.get_id_paz_selezionato(), 
@@ -1546,8 +1627,8 @@ class App(tk.Tk):
         elif (utente.get_tipo_utente_aggiunto() == 'M'): # se medico
             # creo l'oggetto medico
             m = self.factory.crea_utente("medico", id, nome, cognome, mail, dataN)
-            print(id, nome, cognome, mail, dataN)
-            print(type(m), m)
+            #print(id, nome, cognome, mail, dataN)
+            #print(type(m), m)
             if(type(m) == str):
                 messagebox.showinfo(message=m)
                 return
